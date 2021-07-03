@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:13.2
+    restart: always
+    environment:
+      POSTGRES_DB: perryquotes
+      POSTGRES_USER: perry
+      POSTGRES_PASSWORD: changeit
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - /var/lib/postgresql/data
+    ports:
+      - "5432:5432"
