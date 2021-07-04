@@ -12,14 +12,18 @@ import javax.validation.Valid;
 public class BotWebhookController {
 
   private final Logger log;
+  private final BotMessageService service;
 
-  public BotWebhookController(final Logger log) {
+  public BotWebhookController(final Logger log, final BotMessageService service) {
     this.log = log;
+    this.service = service;
   }
 
   @PostMapping(value = "/webhook")
-  public ResponseEntity<Void> telegramWebhook(@Valid @RequestBody IncomingBotMessage update) {
-    log.info("Received Telegram update: " + update);
+  public ResponseEntity<Void> telegramWebhook(@Valid @RequestBody IncomingBotMessage message) {
+    log.info("Received bot message update: " + message);
+    var created = service.storeMessage(message);
+    log.info("RawBotMessage created: " + created);
     return ResponseEntity.noContent().build();
   }
 }

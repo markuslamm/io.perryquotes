@@ -10,7 +10,7 @@ public record IncomingBotMessage(@NotNull @JsonProperty("update_id") Long update
                                  @Valid @NotNull Message message) {
 
   public static record Message(@NotNull @JsonProperty("message_id") Long messageId,
-                                @NotNull @JsonProperty("date") Long messageDate,
-                                @NotEmpty String text) {
+                               @NotNull @JsonProperty("date") Long messageDate,
+                               @NotEmpty String text) {
   }
 }

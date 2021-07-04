@@ -15,7 +15,7 @@ import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TelegramWebhookServerIT extends AbstractIntegrationTest {
+public class BotWebhookControllerIT extends AbstractIntegrationTest {
 
   @LocalServerPort
   private int port;
