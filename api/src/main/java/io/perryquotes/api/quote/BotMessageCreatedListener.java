@@ -9,14 +9,18 @@ import org.springframework.stereotype.Component;
 public class BotMessageCreatedListener {
 
   private final Logger log;
+  private final QuoteService quoteService;
 
-  public BotMessageCreatedListener(final Logger log) {
+  public BotMessageCreatedListener(final Logger log, final QuoteService quoteService) {
     this.log = log;
+    this.quoteService = quoteService;
   }
 
   @EventListener
   public void handMessageCreated(final BotMessageCreatedEvent event) {
-    log.debug("BotMessageCreatedEvent" + event);
-    //do Quote, Author, etc parsing and persisting via QuoteService
+    log.info("Handle BotMessageCreatedEvent" + event);
+    var result = quoteService.handleBotMessage(event);
+    log.info("Created Quote from BotMessageCreatedEvent: {}", result);
+    
   }
 }

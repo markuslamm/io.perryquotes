@@ -29,7 +29,7 @@ public class BotMessageRepositoryTest extends AbstractIntegrationTest {
   public void setUp() {
     var telegramMessage1 = new BotMessage(
       1L, 2L, Instant.now().getEpochSecond(), "Message1");
-    telegramMessage1.setProcessingStatus(ProcessingStatus.PROCESSED);
+    telegramMessage1.setProcessingStatus(ProcessingStatus.SUCCESS);
     entityManager.persist(telegramMessage1);
 
     var telegramMessage2 = entityManager.persist(
@@ -40,8 +40,8 @@ public class BotMessageRepositoryTest extends AbstractIntegrationTest {
 
   @Test
   public void testFindByProcessingStatus() {
-    assertEquals(1, repository.findByProcessingStatus(ProcessingStatus.PROCESSED).size());
     assertEquals(1, repository.findByProcessingStatus(ProcessingStatus.UNPROCESSED).size());
+    assertEquals(1, repository.findByProcessingStatus(ProcessingStatus.SUCCESS).size());
   }
 
 
