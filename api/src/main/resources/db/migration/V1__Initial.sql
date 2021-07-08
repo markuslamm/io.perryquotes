@@ -9,3 +9,12 @@ CREATE TABLE IF NOT EXISTS public.bot_message(
     last_modified_at timestamp without time zone NOT NULL,
     version BIGINT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS public.book_source (
+    uuid uuid PRIMARY KEY,
+    name CHARACTER VARYING(255) NOT NULL UNIQUE,
+    shortcut CHARACTER VARYING(255) NOT NULL UNIQUE,
+    created_at timestamp without time zone NOT NULL,
+    last_modified_at timestamp without time zone NOT NULL,
+    version BIGINT NOT NULL
+);
