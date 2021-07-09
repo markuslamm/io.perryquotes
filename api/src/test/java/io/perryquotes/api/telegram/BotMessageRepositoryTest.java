@@ -27,12 +27,11 @@ public class BotMessageRepositoryTest extends AbstractIntegrationTest {
 
   @BeforeEach
   public void setUp() {
-    var telegramMessage1 = new BotMessage(
-      1L, 2L, Instant.now().getEpochSecond(), "Message1");
-    telegramMessage1.setProcessingStatus(ProcessingStatus.SUCCESS);
-    entityManager.persist(telegramMessage1);
+    entityManager.persist(
+      new BotMessage(1L, 2L, Instant.now().getEpochSecond(), "Message1")
+      .setProcessingStatus(ProcessingStatus.SUCCESS));
 
-    var telegramMessage2 = entityManager.persist(
+    entityManager.persist(
       new BotMessage(2L, 4L, Instant.now().getEpochSecond(), "Message2"));
 
     entityManager.flush();

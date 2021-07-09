@@ -1,5 +1,5 @@
 package io.perryquotes.api.quote;
 
 public enum QuoteState {
-  REVIEW, COMMITTED
+  REVIEW, COMMITTED, TWITTER_PUBLISHED
 }

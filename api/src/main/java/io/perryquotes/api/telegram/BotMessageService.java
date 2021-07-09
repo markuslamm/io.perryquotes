@@ -42,11 +42,20 @@ public class BotMessageService extends BaseEntityService<BotMessage> {
   }
 
   @Transactional
-  public BotMessage setProcessingStatus(final UUID uuid, final ProcessingStatus status) {
-    return repository.findByUuid(uuid).map(msg -> {
-      msg.setProcessingStatus(status);
-      return repository.save(msg);
-    }).orElseThrow(() -> new EntityNotFoundException(BotMessage.class, "uuid", uuid.toString()));
+  public BotMessage setFailureState(final UUID messageUuid) {
+    return repository.findByUuid(messageUuid).map(msg -> repository.save(
+      msg.setProcessingStatus(ProcessingStatus.FAILURE)))
+      .orElseThrow(() -> new EntityNotFoundException(BotMessage.class, "uuid", messageUuid.toString()));
+  }
+
+
+  @Transactional
+  public BotMessage setSuccessState(final UUID messageUuid, final UUID quoteUuid) {
+    return repository.findByUuid(messageUuid).map(msg -> repository.save(
+      msg
+        .setProcessingStatus(ProcessingStatus.SUCCESS)
+        .setQuoteUuid(quoteUuid)))
+      .orElseThrow(() -> new EntityNotFoundException(BotMessage.class, "uuid", messageUuid.toString()));
   }
 
   @Override

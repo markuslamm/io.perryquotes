@@ -21,6 +21,5 @@ public class BotMessageCreatedListener {
     log.info("Handle BotMessageCreatedEvent" + event);
     var result = quoteService.handleBotMessage(event);
     log.info("Created Quote from BotMessageCreatedEvent: {}", result);
-    
   }
 }

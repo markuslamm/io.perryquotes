@@ -27,7 +27,7 @@ public class BotWebhookControllerIT extends AbstractIntegrationTest {
   public void testWebhook() {
     var update = new IncomingBotMessage(
       10L, new IncomingBotMessage.Message(
-        100L, Instant.now().toEpochMilli(), "Message Text@@Author@@SB1"));
+        100L, Instant.now().toEpochMilli(), "Quote Text@@Author@@SB1"));
 
     var response = restTemplate.exchange(
       "http://localhost:" + port + "/webhook",

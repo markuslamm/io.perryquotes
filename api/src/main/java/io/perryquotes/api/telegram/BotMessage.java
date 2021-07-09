@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.UUID;
 
 @Entity
 @Table(name = "bot_message")
@@ -35,6 +36,9 @@ public class BotMessage extends BaseEntity {
   @Column(name = "processing_status", nullable = false)
   private ProcessingStatus processingStatus= ProcessingStatus.UNPROCESSED;
 
+  @Column(name = "quote_uuid", updatable = false)
+  private UUID quoteUuid = null;
+
   public BotMessage(final long updateId, final long messageId,
                     final long timestamp, final String text) {
     this.updateId = updateId;
@@ -52,40 +56,54 @@ public class BotMessage extends BaseEntity {
     return updateId;
   }
 
-  public void setUpdateId(final long updateId) {
+  public BotMessage setUpdateId(final long updateId) {
     this.updateId = updateId;
+    return this;
   }
 
   public long getMessageId() {
     return messageId;
   }
 
-  public void setMessageId(final long messageId) {
+  public BotMessage setMessageId(final long messageId) {
     this.messageId = messageId;
+    return this;
   }
 
   public LocalDateTime getMessageDate() {
     return messageDate;
   }
 
-  public void setMessageDate(final LocalDateTime incomingDate) {
+  public BotMessage setMessageDate(final LocalDateTime incomingDate) {
     this.messageDate = incomingDate;
+    return this;
   }
 
   public String getText() {
     return text;
   }
 
-  public void setText(final String text) {
+  public BotMessage setText(final String text) {
     this.text = text;
+    return this;
   }
 
   public ProcessingStatus getProcessingStatus() {
     return processingStatus;
   }
 
-  public void setProcessingStatus(ProcessingStatus processingStatus) {
+  public BotMessage setProcessingStatus(final ProcessingStatus processingStatus) {
     this.processingStatus = processingStatus;
+    return this;
+  }
+
+  public UUID getQuoteUuid() {
+    return quoteUuid;
+  }
+
+  public BotMessage setQuoteUuid(final UUID quoteUuid) {
+    this.quoteUuid = quoteUuid;
+    return this;
   }
 
   @Override
