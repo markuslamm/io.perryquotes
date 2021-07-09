@@ -1,4 +1,4 @@
-package io.perryquotes.api.quote;
+package io.perryquotes.api.quote.booksource;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

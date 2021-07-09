@@ -1,4 +1,4 @@
-package io.perryquotes.api.quote;
+package io.perryquotes.api.quote.author;
 
 import io.perryquotes.api.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,26 +19,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class BookSourceRepositoryIT extends AbstractIntegrationTest {
+public class AuthorRepositoryIT extends AbstractIntegrationTest {
 
   @Autowired
   private TestEntityManager entityManager;
 
   @Autowired
-  private BookSourceRepository bookSourceRepository;
+  private AuthorRepository authorRepository;
 
   @BeforeEach
   public void setUp() {
-    entityManager.persist(new BookSource("Source1", "AB1"));
-    entityManager.persist(new BookSource("Source2", "AB2"));
+    var author1 = entityManager.persist(new Author("Author1"));
+    var author2 = entityManager.persist(new Author("Author2"));
 
     entityManager.flush();
   }
 
   @Test
   public void testFindByUuid() {
-    getExistingSources().forEach(existing -> {
-      var result = bookSourceRepository.findByUuid(existing.getUuid());
+    getExistingAuthors().forEach(existing -> {
+      var result = authorRepository.findByUuid(existing.getUuid());
       assertTrue(result.isPresent());
       assertEquals(result.get().getUuid(), existing.getUuid());
     });
@@ -46,27 +46,27 @@ public class BookSourceRepositoryIT extends AbstractIntegrationTest {
 
   @Test
   public void testFindByUuidNotFound() {
-   assertTrue(bookSourceRepository.findByUuid(UUID.randomUUID()).isEmpty());
+    assertTrue(authorRepository.findByUuid(UUID.randomUUID()).isEmpty());
   }
 
   @Test
-  public void testFindByShortcut() {
-    getExistingSources().forEach(existing -> {
-      var result = bookSourceRepository.findByShortcut(existing.getShortcut());
+  public void testFindByName() {
+    getExistingAuthors().forEach(existing -> {
+      var result = authorRepository.findByName(existing.getName());
       assertTrue(result.isPresent());
-      assertEquals(result.get().getShortcut(), existing.getShortcut());
+      assertEquals(result.get().getName(), existing.getName());
     });
   }
 
   @Test
-  public void testFindByShortcutNotFound() {
-    assertTrue(bookSourceRepository.findByShortcut("XYZ").isEmpty());
+  public void testFindByNameNotFound() {
+    assertTrue(authorRepository.findByName("Unknown").isEmpty());
   }
 
   @SuppressWarnings("unchecked")
-  private List<BookSource> getExistingSources() {
-    return (List<BookSource>) entityManager.getEntityManager()
-      .createQuery("SELECT bs FROM BookSource bs")
+  private List<Author> getExistingAuthors() {
+    return (List<Author>) entityManager.getEntityManager()
+      .createQuery("SELECT a FROM Author a")
       .getResultList();
   }
 }

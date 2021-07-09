@@ -1,8 +1,13 @@
 package io.perryquotes.api.quote;
 
 import io.perryquotes.api.base.BaseEntityService;
+import io.perryquotes.api.error.EntityNotFoundException;
 import io.perryquotes.api.events.BotMessageCreatedEvent;
 import io.perryquotes.api.events.BotMessageProcessedEvent;
+import io.perryquotes.api.quote.author.Author;
+import io.perryquotes.api.quote.author.AuthorRepository;
+import io.perryquotes.api.quote.booksource.BookSource;
+import io.perryquotes.api.quote.booksource.BookSourceRepository;
 import io.perryquotes.api.quote.parser.BotMessageParser;
 import io.perryquotes.api.quote.parser.ParserException;
 import org.slf4j.Logger;
@@ -16,6 +21,7 @@ import java.util.UUID;
 @Service
 public class QuoteService extends BaseEntityService<Quote> {
 
+  //TODO use services
   private final QuoteRepository quoteRepository;
   private final AuthorRepository authorRepository;
   private final BookSourceRepository bookSourceRepository;
@@ -42,6 +48,12 @@ public class QuoteService extends BaseEntityService<Quote> {
     log.debug("Created Quote from BotMessageCreatedEvent: {}", quoteResult);
     publisher.publishEvent(new BotMessageProcessedEvent(this, event.getRawBotMessage().getUuid(), Optional.ofNullable(quoteResult)));
     return quoteResult;
+  }
+
+  Quote commitQuote(final UUID quoteUuid) {
+    return quoteRepository.findByUuid(quoteUuid).map(q -> quoteRepository.save(
+      q.setQuoteState(QuoteState.COMMITTED)))
+      .orElseThrow(() -> new EntityNotFoundException(Quote.class, "uuid", quoteUuid.toString()));
   }
 
   private Quote createQuoteFromBotMessage(final String messageText) {

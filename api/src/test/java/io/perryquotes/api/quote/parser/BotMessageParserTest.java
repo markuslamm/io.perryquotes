@@ -1,7 +1,5 @@
-package io.perryquotes.api.quote;
+package io.perryquotes.api.quote.parser;
 
-import io.perryquotes.api.quote.parser.BotMessageParser;
-import io.perryquotes.api.quote.parser.ParserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

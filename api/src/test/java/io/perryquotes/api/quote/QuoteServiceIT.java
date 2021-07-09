@@ -70,6 +70,9 @@ public class QuoteServiceIT extends AbstractIntegrationTest {
 ////
 ////    assertEquals(quoteResult.getBookSource().getAbbreviation(), validSource);
 //  }
+
+  // @Test
+  //   public void commitQuote() {}
 //
 //  @Test
 //  public void testCreateFromTelegramMultipleAuthors() {

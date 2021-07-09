@@ -1,4 +1,4 @@
-package io.perryquotes.api.quote;
+package io.perryquotes.api.quote.booksource;
 
 import io.perryquotes.api.base.BaseEntity;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -11,37 +11,55 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
+;
+
 @Entity
-@Table(name = "author")
-class Author extends BaseEntity {
+@Table(name = "book_source")
+public class BookSource extends BaseEntity {
 
-  protected Author() {}
+  protected BookSource() {}
 
-  Author(final String name) {
+  BookSource(final String name, final String shortcut) {
     this.name = name;
+    this.shortcut = shortcut;
   }
 
   @NotEmpty
-  @Pattern(regexp = "^.{2,50}")
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  String getName() {
+  @NotEmpty
+  @Pattern(regexp = "^[A-Z0-9]{3,5}")
+  @Column(name = "shortcut", nullable = false, unique = true)
+  private String shortcut;
+
+  public String getName() {
     return name;
   }
 
-  void setName(final String name) {
+  public BookSource setName(final String name) {
     this.name = name;
+    return this;
+  }
+
+  String getShortcut() {
+    return shortcut;
+  }
+
+  BookSource setShortcut(final String abbreviation) {
+    this.shortcut = abbreviation;
+    return this;
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof Author)) return false;
+    if (!(o instanceof BookSource)) return false;
     var builder = new EqualsBuilder().appendSuper(super.equals(o));
-    var that = (Author) o;
+    var that = (BookSource) o;
     return builder
       .append(name, that.name)
+      .append(shortcut, that.shortcut)
       .isEquals();
   }
 
@@ -50,11 +68,13 @@ class Author extends BaseEntity {
     return new HashCodeBuilder()
       .appendSuper(super.hashCode())
       .append(name)
+      .append(shortcut)
       .build();
   }
 
   @Override
   public void addToString(ToStringBuilder builder) {
     builder.append("name", name);
+    builder.append("abbreviation", shortcut);
   }
 }

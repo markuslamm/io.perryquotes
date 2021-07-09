@@ -1,4 +1,4 @@
-package io.perryquotes.api.quote;
+package io.perryquotes.api.quote.author;
 
 import org.junit.jupiter.api.Test;
 

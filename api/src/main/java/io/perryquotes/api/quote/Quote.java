@@ -1,6 +1,8 @@
 package io.perryquotes.api.quote;
 
 import io.perryquotes.api.base.BaseEntity;
+import io.perryquotes.api.quote.author.Author;
+import io.perryquotes.api.quote.booksource.BookSource;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -10,6 +12,8 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+;
 
 @Entity
 @Table(name = "quote")
@@ -39,6 +43,42 @@ public class Quote extends BaseEntity {
     this.text = text;
     this.author = author;
     this.bookSource = bookSource;
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public Quote setText(final String text) {
+    this.text = text;
+    return this;
+  }
+
+  public Author getAuthor() {
+    return author;
+  }
+
+  public Quote setAuthor(final Author author) {
+    this.author = author;
+    return this;
+  }
+
+  public BookSource getBookSource() {
+    return bookSource;
+  }
+
+  public Quote setBookSource(final BookSource bookSource) {
+    this.bookSource = bookSource;
+    return this;
+  }
+
+  public QuoteState getQuoteState() {
+    return quoteState;
+  }
+
+  public Quote setQuoteState(final QuoteState quoteState) {
+    this.quoteState = quoteState;
+    return this;
   }
 
   @Override
