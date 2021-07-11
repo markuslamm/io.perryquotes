@@ -7,10 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.validation.ConstraintViolationException;
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -35,38 +35,55 @@ public class BotMessageServiceIT extends AbstractIntegrationTest {
   }
 
   @Test
-  public void testStoreMessageMissingUpdateId() {
-    //TODO
+  public void testStoreMessageUpdateIdIsNull() {
+    assertThrows(ConstraintViolationException.class,
+      () -> service.storeMessage(
+        new IncomingBotMessage(null,
+          new IncomingBotMessage.Message(1L, Instant.now().toEpochMilli(), "Quote Text@@Author@@SB1"))));
   }
 
   @Test
-  public void testStoreMessageMissingMessage() {
-    //TODO
+  public void testStoreMessageIsNull() {
+    assertThrows(ConstraintViolationException.class,
+      () -> service.storeMessage(
+        new IncomingBotMessage(1L, null)));
   }
 
   @Test
-  public void testStoreMessageMissingMessageId() {
-    //TODO
+  public void testStoreMessageIdIsNull() {
+    assertThrows(ConstraintViolationException.class,
+      () -> service.storeMessage(
+        new IncomingBotMessage(1L,
+          new IncomingBotMessage.Message(null, Instant.now().toEpochMilli(), "Quote Text@@Author@@SB1"))));
   }
 
   @Test
-  public void testStoreMessageMissingMessageDate() {
-    //TODO
+  public void testStoreMessageDateIsNull() {
+    assertThrows(ConstraintViolationException.class,
+      () -> service.storeMessage(
+        new IncomingBotMessage(1L,
+          new IncomingBotMessage.Message(1L, null, "Quote Text@@Author@@SB1"))));
   }
 
   @Test
-  public void testStoreMessageMissingMessageTextNull() {
-    //TODO
+  public void testStoreMessageTextNull() {
+    assertThrows(ConstraintViolationException.class,
+      () -> service.storeMessage(
+        new IncomingBotMessage(1L,
+          new IncomingBotMessage.Message(1L, Instant.now().toEpochMilli(), null))));
   }
 
   @Test
   public void testStoreMessageMissingMessageTextEmpty() {
-    //TODO
+    assertThrows(ConstraintViolationException.class,
+      () -> service.storeMessage(
+        new IncomingBotMessage(1L,
+          new IncomingBotMessage.Message(1L, Instant.now().toEpochMilli(), ""))));
   }
 
   @Test
   public void testSetFailureState() {
-    //TODO
+
   }
 
   @Test
