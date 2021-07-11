@@ -21,11 +21,11 @@ public class BotMessageProcessedListener {
 
   @EventListener
   public void handMessageProcessed(final BotMessageProcessedEvent event) {
-    log.debug("Received BotMessageProcessedEvent" + event);
+    log.debug("Received BotMessageProcessedEvent:" + event);
     var processedMessage = event.getQuote()
       .map(q -> botMessageService.setSuccessState(event.getBotMessageUuid(), q.getUuid()))
       .orElse(botMessageService.setFailureState(event.getBotMessageUuid()));
-    log.info("Set BotMessage processing state: {}", processedMessage.getProcessingStatus());
+    log.info("Set BotMessage processing state: {}", processedMessage);
     var responseStatus = telegramResponseClient.sendTelegramResponse(event.getBotMessageUuid(), event.getQuote());
     log.info("Send Telegram response: {}", responseStatus);
   }

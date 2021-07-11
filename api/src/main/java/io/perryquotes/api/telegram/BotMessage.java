@@ -113,5 +113,6 @@ public class BotMessage extends BaseEntity {
     builder.append("incomingDate", messageDate);
     builder.append("text", text);
     builder.append("processingStatus", processingStatus);
+    builder.append("quoteUuid", quoteUuid);
   }
 }

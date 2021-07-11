@@ -35,10 +35,60 @@ public class BotWebhookControllerIT extends AbstractIntegrationTest {
 
     var response = restTemplate.exchange(
       "http://localhost:" + port + "/webhook",
-      HttpMethod.POST, new HttpEntity<>(update) ,
-      Void.class);
+      HttpMethod.POST, new HttpEntity<>(update), Void.class);
     assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);
     assertEquals(1, entityManager.createQuery("SELECT q FROM Quote q").getResultList().size());
     assertEquals(1, entityManager.createQuery("SELECT a FROM Author a").getResultList().size());
+  }
+
+  @Test
+  public void testWebhookUpdateIdIsNull() throws Exception {
+    //TODO
+  }
+
+
+  @Test
+  public void testWebhookUpdateIdIsMissing() throws Exception {
+    //TODO
+  }
+
+  @Test
+  public void testWebhookMessageIsNull() throws Exception {
+    //TODO
+  }
+
+  @Test
+  public void testWebhookMessageIsMissing() throws Exception {
+    //TODO
+  }
+
+  @Test
+  public void testWebhookMessageIdIsNull() throws Exception {
+    //TODO
+  }
+
+  @Test
+  public void testWebhookMessageIdIsMissing() throws Exception {
+    //TODO
+  }
+
+  @Test
+  public void testWebhookMessageDateIsNull() throws Exception {
+    //TODO
+  }
+
+  @Test
+  public void testWebhookMessageDateIsMissing() throws Exception {
+    //TODO
+  }
+
+  @Test
+  public void testWebhookTextIsNull() throws Exception {
+    //TODO
+  }
+
+  @Test
+  public void testWebhookTextIsMissing() throws Exception {
+    //TODO
   }
 }

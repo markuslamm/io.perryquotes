@@ -7,10 +7,13 @@ import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @Service
+@Validated
 public class BotMessageService extends BaseEntityService<BotMessage> {
 
   private final BotMessageRepository repository;
@@ -28,7 +31,7 @@ public class BotMessageService extends BaseEntityService<BotMessage> {
   }
 
   @Transactional
-  BotMessage storeMessage(final IncomingBotMessage update) {
+  BotMessage storeMessage(@Valid final IncomingBotMessage update) {
     var message = update.message();
     var created = repository.save(
       new BotMessage(

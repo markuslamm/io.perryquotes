@@ -30,6 +30,8 @@ public class BotMessageProcessedEvent extends ApplicationEvent {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+      .append("botMessageUuid", botMessageUuid)
+      .append("quote", quote)
       .build();
   }
 }
