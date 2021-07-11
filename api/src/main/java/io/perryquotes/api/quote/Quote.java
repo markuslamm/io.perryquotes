@@ -13,8 +13,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-;
-
 @Entity
 @Table(name = "quote")
 public class Quote extends BaseEntity {
@@ -106,5 +104,9 @@ public class Quote extends BaseEntity {
     builder.append("author", author.getName());
     builder.append("bookSource", bookSource.getName());
     builder.append("quoteState", quoteState);
+  }
+
+  public QuoteRecord toDTO() {
+    return new QuoteRecord(uuid, text, author.getUuid(), bookSource.getUuid(), quoteState, createdAt, lastModifiedAt);
   }
 }

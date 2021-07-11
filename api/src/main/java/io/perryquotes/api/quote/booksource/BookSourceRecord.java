@@ -14,6 +14,16 @@ public record BookSourceRecord(UUID uuid,
                                LocalDateTime createdAt,
                                LocalDateTime lastModifiedAt) {
 
+  public BookSourceRecord(String name, String shortcut) {
+    this(null, name, shortcut, null, null);
+  }
+
+  public BookSourceRecord(UUID uuid, String name, String shortcut) {
+    this(uuid, name, shortcut, null, null);
+  }
+
+
+
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)

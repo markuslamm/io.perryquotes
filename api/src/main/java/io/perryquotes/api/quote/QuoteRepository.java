@@ -11,11 +11,11 @@ public interface QuoteRepository extends JpaRepository<Quote, UUID> {
 
   Optional<Quote> findByUuid(final UUID uuid);
 
-  @Query("select quote from Quote quote where quote.author.name = :name")
-  List<Quote> findByAuthorName(final String name);
+  @Query("select quote from Quote quote where quote.author.uuid = :uuid")
+  List<Quote> findByAuthorUuid(final UUID uuid);
 
-  @Query("select quote from Quote quote where quote.bookSource.shortcut = :shortcut")
-  List<Quote> findByBookSourceShortcut(final String shortcut);
+  @Query("select quote from Quote quote where quote.bookSource.uuid = :uuid")
+  List<Quote> findByBookSourceUuid(final UUID uuid);
 
   List<Quote> findByQuoteState(final QuoteState state);
 }

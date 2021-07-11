@@ -39,3 +39,8 @@ CREATE TABLE IF NOT EXISTS public.quote (
     version BIGINT NOT NULL
 );
 
+/*CREATE TABLE IF NOT EXISTS public.quote_author (
+    quote_uuid uuid NOT NULL REFERENCES public.quote (uuid),
+    author_uuid uuid NOT NULL REFERENCES public.author (uuid)
+);*/
+

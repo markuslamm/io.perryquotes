@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
+import javax.persistence.EntityManager;
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +24,9 @@ public class BotWebhookControllerIT extends AbstractIntegrationTest {
   @Autowired
   private TestRestTemplate restTemplate;
 
+  @Autowired
+  private EntityManager entityManager;
+
   @Test
   public void testWebhook() {
     var update = new IncomingBotMessage(
@@ -34,6 +38,7 @@ public class BotWebhookControllerIT extends AbstractIntegrationTest {
       HttpMethod.POST, new HttpEntity<>(update) ,
       Void.class);
     assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);
-    //TODO assertEquals(1, entityManager.createQuery("SELECT q FROM Quote q").getResultList().size());
+    assertEquals(1, entityManager.createQuery("SELECT q FROM Quote q").getResultList().size());
+    assertEquals(1, entityManager.createQuery("SELECT a FROM Author a").getResultList().size());
   }
 }

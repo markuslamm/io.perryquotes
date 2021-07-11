@@ -9,5 +9,7 @@ public interface BookSourceRepository extends JpaRepository<BookSource, UUID> {
 
   Optional<BookSource> findByUuid(UUID uuid);
 
+  Optional<BookSource> findByName(String name);
+
   Optional<BookSource> findByShortcut(String shortcut);
 }

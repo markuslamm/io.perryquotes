@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class BotMessageRepositoryTest extends AbstractIntegrationTest {
+public class BotMessageRepositoryIT extends AbstractIntegrationTest {
 
   @Autowired
   private TestEntityManager entityManager;

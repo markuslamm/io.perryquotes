@@ -30,8 +30,13 @@ public class Author extends BaseEntity {
     return name;
   }
 
-  public void setName(final String name) {
+  public Author setName(final String name) {
     this.name = name;
+    return this;
+  }
+
+  public AuthorRecord toDTO() {
+    return new AuthorRecord(uuid, name, createdAt, lastModifiedAt);
   }
 
   @Override

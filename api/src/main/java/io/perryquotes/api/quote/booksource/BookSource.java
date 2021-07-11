@@ -42,12 +42,16 @@ public class BookSource extends BaseEntity {
     return this;
   }
 
+  public BookSourceRecord toDTO() {
+    return new BookSourceRecord(uuid, name, shortcut, createdAt, lastModifiedAt);
+  }
+
   String getShortcut() {
     return shortcut;
   }
 
-  BookSource setShortcut(final String abbreviation) {
-    this.shortcut = abbreviation;
+  BookSource setShortcut(final String shortcut) {
+    this.shortcut = shortcut;
     return this;
   }
 
@@ -75,6 +79,6 @@ public class BookSource extends BaseEntity {
   @Override
   public void addToString(ToStringBuilder builder) {
     builder.append("name", name);
-    builder.append("abbreviation", shortcut);
+    builder.append("shortcut", shortcut);
   }
 }

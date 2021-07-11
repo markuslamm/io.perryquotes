@@ -3,7 +3,9 @@
 ![Perry Rhodan](perry.jpg "Perry Rhodan")
 
 I’m a huge Perry Rhodan fan and audiobooker of the Silver Editions from Kassel, Germany. 
-This is a little Spring-Boot project to collect quotes, to provide a public api and to make cool Perry Rhodan tweets..;)
+This is a little Spring-Boot project to collect cool quotes, to provide a public api for them and to tweet from within the application
+
+Deployed on Heroku.
 
 Workflows:
 * Telegram-Component
@@ -11,14 +13,23 @@ Workflows:
     - Message will be persisted and set to UNPROCESSED state
     - An event will be published and triggers the parsing of the incoming message
   
-    
 * Quote-Component
     - Bot message will be parsed, a quote created and stored in the database in REVIEW state
-     - An event will be published and triggers the response via telegram existing channel
-    - After checking the quote for typos etc, the generated quote changes to state COMMITTED and will be available via public api
+     - An event will be published and triggers the response via existing telegram channel
+    - After checking the quote for typos etc, the generated quote changes to COMMITTED state and will be available via public api
 
 
 * Twitter-Component
-  - Tweet committed quotes to the account @perryrhodanquo1
+  - Committed quotes can be tweeted to the account @perryrhodanquo1
+  
+TODOS:
+- multiple authors, "dialogues"
+- write more tests
+- add security and separate PUBLIC and ADMIN components
+- separate integration test
+- improve logging
+- get rid of //TODO s
+- pagination
+- Webapp implementation
 
 
