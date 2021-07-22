@@ -24,9 +24,11 @@ Workflows:
   
 TODOS:
 - multiple authors, "dialogues"
-- write more tests
+- "Tag"-domain, search by Tag
+- write more tests, parameterized tests
 - add security and separate PUBLIC and ADMIN components
 - separate integration test
+- use WebClient instead of RestTemplate
 - improve logging
 - get rid of //TODO s
 - pagination
