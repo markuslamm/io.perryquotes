@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS public.author (
 CREATE TABLE IF NOT EXISTS public.quote (
     uuid uuid PRIMARY KEY,
     text TEXT NOT NULL,
-    author_uuid uuid NOT NULL REFERENCES public.author(uuid),
     book_source_uuid uuid NOT NULL REFERENCES public.book_source(uuid),
     quote_state CHARACTER VARYING(20) NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -39,8 +38,8 @@ CREATE TABLE IF NOT EXISTS public.quote (
     version BIGINT NOT NULL
 );
 
-/*CREATE TABLE IF NOT EXISTS public.quote_author (
+CREATE TABLE IF NOT EXISTS public.quote_author (
     quote_uuid uuid NOT NULL REFERENCES public.quote (uuid),
     author_uuid uuid NOT NULL REFERENCES public.author (uuid)
-);*/
+);
 

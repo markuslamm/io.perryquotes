@@ -22,9 +22,9 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
-
-import static java.lang.String.format;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -50,7 +50,8 @@ public class QuoteService extends BaseEntityService<Quote> {
     this.publisher = publisher;
   }
 
-  private record AuthorBookSourceTuple(Author author, BookSource bookSource) { }
+  private record AuthorsBookSourceTuple(Set<Author> authors, BookSource bookSource) {
+  }
 
   @Transactional
   Quote handleBotMessage(final BotMessageCreatedEvent event) {
@@ -64,25 +65,25 @@ public class QuoteService extends BaseEntityService<Quote> {
   @Transactional
   public Quote create(@Valid final QuoteRecord quoteData) {
 
-    var authorAndBookSourceTuple = getAuthorAndBookSource(quoteData);
+    var authorAndBookSourceTuple = getAuthorsAndBookSource(quoteData);
     var created = quoteRepository.save(
-      new Quote(quoteData.text(), authorAndBookSourceTuple.author(), authorAndBookSourceTuple.bookSource()));
-    log.debug(format("Created Quote: %s", created));
+      new Quote(quoteData.text(), authorAndBookSourceTuple.authors(), authorAndBookSourceTuple.bookSource()));
+    log.debug(String.format("Created Quote: %s", created));
     return created;
   }
 
   @Transactional
   public Quote update(final UUID uuid, final QuoteRecord quoteData) {
-    var authorAndBookSourceTuple = getAuthorAndBookSource(quoteData);
+    var authorAndBookSourceTuple = getAuthorsAndBookSource(quoteData);
 
     var updated = quoteRepository.findByUuid(uuid).map(
       quote -> quoteRepository.save(quote
         .setText(quoteData.text())
-        .setAuthor(authorAndBookSourceTuple.author())
+        .addAuthors(authorAndBookSourceTuple.authors())
         .setBookSource(authorAndBookSourceTuple.bookSource())
         .setQuoteState(quoteData.state())))
       .orElseThrow(() -> new EntityNotFoundException(Quote.class, "uuid", uuid.toString()));
-    log.debug(format("Quote %s updated: %s", uuid, updated));
+    log.debug(String.format("Quote %s updated: %s", uuid, updated));
 
     return updated;
   }
@@ -110,7 +111,7 @@ public class QuoteService extends BaseEntityService<Quote> {
       var created = quoteRepository.saveAndFlush(
         new Quote(
           parsed.text(),
-          getAuthor(parsed.author()),
+          getAuthor(parsed.authors()),
           getBookSource(parsed.bookSource())));
       log.debug("Created quote from Telegram update: {}", created);
       return created;
@@ -120,9 +121,12 @@ public class QuoteService extends BaseEntityService<Quote> {
     }
   }
 
-  private Author getAuthor(String parsedAuthor) {
-    return authorService.findByName(parsedAuthor)
-      .orElse(authorService.create(new AuthorRecord(parsedAuthor)));
+  private Set<Author> getAuthor(final Set<String> parsedAuthors) {
+    return parsedAuthors.stream()
+      .map(a -> authorService.findByName(a).orElse(authorService.create(new AuthorRecord(a))))
+      .collect(Collectors.toSet());
+
+
   }
 
   private BookSource getBookSource(String parsedBookSource) {
@@ -131,12 +135,14 @@ public class QuoteService extends BaseEntityService<Quote> {
         new InvalidDataException(String.format("No BookSource available for shortcut %s", parsedBookSource)));
   }
 
-  private AuthorBookSourceTuple getAuthorAndBookSource(final QuoteRecord quoteData) {
-    var author = authorService.findByUuid(quoteData.authorUuid())
-      .orElseThrow(() -> new EntityNotFoundException(Author.class, "uuid", quoteData.authorUuid().toString()));
+  private AuthorsBookSourceTuple getAuthorsAndBookSource(final QuoteRecord quoteData) {
+    var authors = authorService.findByUuids(quoteData.authorUuids());
+    if (authors.isEmpty()) {
+      throw new EntityNotFoundException(Author.class, "uuid", quoteData.authorUuids());
+    }
     var bookSource = bookSourceService.findByUuid(quoteData.bookSourceUuid())
       .orElseThrow(() -> new EntityNotFoundException(BookSource.class, "uuid", quoteData.bookSourceUuid().toString()));
-    return new AuthorBookSourceTuple(author, bookSource);
+    return new AuthorsBookSourceTuple(authors, bookSource);
   }
 
   @Override

@@ -22,10 +22,15 @@ public class BotMessageServiceIT extends AbstractIntegrationTest {
   @Autowired
   private EntityManager entityManager;
 
+  private static final String VALID_MSG_TEXT = """
+    @Perry@ Hallo hallo
+    #SB1
+    """;
+
   @Test
   public void testStoreValidMessage() {
     var message = new IncomingBotMessage(1L,
-      new IncomingBotMessage.Message(1L, Instant.now().toEpochMilli(), "Quote Text@@Author@@SB1"));
+      new IncomingBotMessage.Message(1L, Instant.now().toEpochMilli(), VALID_MSG_TEXT));
     var result = service.storeMessage(message);
     assertNotNull(result);
     assertNotNull(result.getQuoteUuid());
@@ -39,7 +44,7 @@ public class BotMessageServiceIT extends AbstractIntegrationTest {
     assertThrows(ConstraintViolationException.class,
       () -> service.storeMessage(
         new IncomingBotMessage(null,
-          new IncomingBotMessage.Message(1L, Instant.now().toEpochMilli(), "Quote Text@@Author@@SB1"))));
+          new IncomingBotMessage.Message(1L, Instant.now().toEpochMilli(), VALID_MSG_TEXT))));
   }
 
   @Test
@@ -54,7 +59,7 @@ public class BotMessageServiceIT extends AbstractIntegrationTest {
     assertThrows(ConstraintViolationException.class,
       () -> service.storeMessage(
         new IncomingBotMessage(1L,
-          new IncomingBotMessage.Message(null, Instant.now().toEpochMilli(), "Quote Text@@Author@@SB1"))));
+          new IncomingBotMessage.Message(null, Instant.now().toEpochMilli(), VALID_MSG_TEXT))));
   }
 
   @Test
@@ -62,7 +67,7 @@ public class BotMessageServiceIT extends AbstractIntegrationTest {
     assertThrows(ConstraintViolationException.class,
       () -> service.storeMessage(
         new IncomingBotMessage(1L,
-          new IncomingBotMessage.Message(1L, null, "Quote Text@@Author@@SB1"))));
+          new IncomingBotMessage.Message(1L, null, VALID_MSG_TEXT))));
   }
 
   @Test

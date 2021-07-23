@@ -1,15 +1,19 @@
 package io.perryquotes.api.quote.author;
 
 import io.perryquotes.api.base.BaseEntity;
+import io.perryquotes.api.quote.Quote;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "author")
@@ -26,12 +30,24 @@ public class Author extends BaseEntity {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
+  @ManyToMany(mappedBy = "authors")
+  private Set<Quote> quotes = new HashSet<>();
+
   public String getName() {
     return name;
   }
 
   public Author setName(final String name) {
     this.name = name;
+    return this;
+  }
+
+  public Set<Quote> getQuotes() {
+    return quotes;
+  }
+
+  public Author setQuotes(final Set<Quote> quotes) {
+    this.quotes = quotes;
     return this;
   }
 

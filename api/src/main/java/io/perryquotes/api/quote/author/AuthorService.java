@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -28,6 +29,14 @@ public class AuthorService extends BaseEntityService<Author> {
   @Transactional(readOnly = true)
   public Optional<Author> findByName(String name) {
     return repository.findByName(name);
+  }
+
+  public Set<Author> findByUuids(final Set<UUID> uuids) {
+    return repository.findAllByUuidIn(uuids);
+  }
+
+  public Set<Author> findByNames(final Set<String> names) {
+    return repository.findAllByNameIn(names);
   }
 
   @Transactional

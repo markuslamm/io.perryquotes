@@ -1,10 +1,12 @@
 package io.perryquotes.api.quote.parser;
 
+import io.perryquotes.api.error.InvalidDataException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BotMessageParserTest {
 
@@ -12,69 +14,78 @@ public class BotMessageParserTest {
 
   @BeforeEach
   public void setUp() {
-    parser = new BotMessageParser();
+    parser = new BotMessageParser(LoggerFactory.getLogger(BotMessageParser.class));
   }
 
   @Test
-  public void testParseValidInput() {
-    var validText = "Quote text here";
-    var validAuthor = "Author";
-    var validBookSource = "SB1";
-    var validInput = String.format("%s@@%s@@%s", validText, validAuthor, validBookSource);
+  public void testValidInputSingleAuthor() {
+    var msg = """
+      @Perry@ Hello Thora.
+      #SB1
+      """;
 
-    var result = parser.parse(validInput);
-    assertEquals(result.text(), validText);
-    assertEquals(result.author(), validAuthor);
-    assertEquals(result.bookSource(), validBookSource);
+    var result = parser.parse(msg);
+    assertEquals(1, result.authors().size());
+    assertEquals("SB1", result.bookSource());
   }
 
   @Test
-  public void testParseAuthorTooLong() {
-    var validText = "Quote text her ,;?!";
-    var validAuthor = "AuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthorAuthor";
-    var validBookSource = "SB1";
-    var invalidInput = String.format("%s@@%s@@%s", validText, validAuthor, validBookSource);
+  public void testValidInputMultipleAuthors() {
+    var msg = """
+      @Perry@ Hello Thora.
+      @Thora@Hello Perry.
+      @Gucky@ Hello Thora.
+      @Atlan@ Hello Thora.
+      @Perry@Hello Atlan.
+      #SB1
+      """;
 
-    assertThatExceptionOfType(ParserException.class).isThrownBy(()-> parser.parse(invalidInput));
+    var result = parser.parse(msg);
+    assertEquals( 4, result.authors().size());
+    assertEquals("SB1", result.bookSource());
   }
 
   @Test
-  public void testParseAuthorTooShort() {
-    var validText = "Quote text her ,;?!";
-    var validAuthor = "A";
-    var validBookSource = "SB1";
-    var invalidInput = String.format("%s@@%s@@%s", validText, validAuthor, validBookSource);
+  public void testMissingAuthors() {
+    var msg = """
+      Perry@ Hello Thora.
+      Thora@Hello Perry.
+      Gucky@ Hello Thora.
+      Atlan@ Hello Thora.
+      Perry@Hello Atlan.
+      #SB1
+      """;
 
-    assertThatExceptionOfType(ParserException.class).isThrownBy(()-> parser.parse(invalidInput));
+    assertThrows(InvalidDataException.class,
+      () -> parser.parse(msg));
   }
 
   @Test
-  public void testParseBoolSourceMissing() {
-    var validText = "Quote text her ,;?!";
-    var validAuthor = "Author";
-    var invalidBookSource = "";
-    var invalidInput = String.format("%s@@%s@@%s", validText, validAuthor, invalidBookSource);
+  public void testMissingBookSource() {
+    var msg = """
+      @Perry@ Hello Thora.
+      @Thora@Hello Perry.
+      @Gucky@ Hello Thora.
+      @Atlan@ Hello Thora.
+      @Perry@Hello Atlan.
+      """;
 
-    assertThatExceptionOfType(ParserException.class).isThrownBy(()-> parser.parse(invalidInput));
+    assertThrows(InvalidDataException.class,
+      () -> parser.parse(msg));
   }
 
   @Test
-  public void testParseBoolSourceTooShort() {
-    var validText = "Quote text her ,;?!";
-    var validAuthor = "Author";
-    var invalidBookSource = "SB";
-    var invalidInput = String.format("%s@@%s@@%s", validText, validAuthor, invalidBookSource);
+  public void testEmptyBookSource() {
+    var msg = """
+      @Perry@ Hello Thora.
+      @Thora@Hello Perry.
+      @Gucky@ Hello Thora.
+      @Atlan@ Hello Thora.
+      @Perry@Hello Atlan.
+      #
+      """;
 
-    assertThatExceptionOfType(ParserException.class).isThrownBy(()-> parser.parse(invalidInput));
-  }
-
-  @Test
-  public void testParseBoolSourceTooLong() {
-    var validText = "Quote text her ,;?!";
-    var validAuthor = "Author";
-    var invalidBookSource = "SB2332432";
-    var invalidInput = String.format("%s@@%s@@%s", validText, validAuthor, invalidBookSource);
-
-    assertThatExceptionOfType(ParserException.class).isThrownBy(()-> parser.parse(invalidInput));
+    assertThrows(InvalidDataException.class,
+      () -> parser.parse(msg));
   }
 }

@@ -1,4 +1,4 @@
-package io.perryquotes.api.quote;//package net.perryquotes.api.quote;
+package io.perryquotes.api.quote;
 
 import io.perryquotes.api.AbstractIntegrationTest;
 import org.junit.jupiter.api.extension.ExtendWith;
