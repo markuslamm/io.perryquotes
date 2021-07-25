@@ -1,21 +1,24 @@
 package io.perryquotes.api.quote.author;
 
+import io.perryquotes.api.base.LoggableComponent;
+import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-public class AuthorController {
+public class AuthorController extends LoggableComponent {
 
   private final AuthorService authorService;
 
-  public AuthorController(AuthorService authorService) {
+  public AuthorController(final Logger log,
+                          final AuthorService authorService) {
+    super(log);
     this.authorService = authorService;
   }
 
@@ -40,5 +43,23 @@ public class AuthorController {
       .map(Author::toDTO)
       .collect(Collectors.toList());
     return ResponseEntity.ok(result);
+  }
+
+  @PostMapping("/authors")
+  public ResponseEntity<AuthorRecord> create(@Valid @RequestBody final AuthorRecord request,
+                                                 final UriComponentsBuilder uriBuilder)
+  {
+    var created = authorService.create(request);
+    var location = uriBuilder.path("/authors/{uuid}").buildAndExpand(created.getUuid()).toUri();
+    log.info("Created Author at location '{}': {}}", location, created);
+    return ResponseEntity.created(location).body(created.toDTO());
+  }
+
+  @PutMapping("/authors/{uuid}")
+  public ResponseEntity<AuthorRecord> update(@PathVariable final UUID uuid,
+                                                 @RequestBody final AuthorRecord request) {
+    var updated = authorService.update(uuid, request);
+    log.info("Updated Author {}: {}", uuid, updated);
+    return ResponseEntity.ok(updated.toDTO());
   }
 }

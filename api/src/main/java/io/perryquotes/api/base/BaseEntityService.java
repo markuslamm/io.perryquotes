@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class BaseEntityService<T extends BaseEntity> {
-
-  protected final Logger log;
+public abstract class BaseEntityService<T extends BaseEntity> extends LoggableComponent {
 
   public BaseEntityService(final Logger log) {
-    this.log = log;
+    super(log);
   }
 
   protected abstract JpaRepository<T, UUID> getRepository();

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record BookSourceRecord(UUID uuid,
-                               @NotEmpty String name,
+                               String name,
                                @NotEmpty @Pattern(regexp = "^[A-Z0-9]{3,5}") String shortcut,
                                LocalDateTime createdAt,
                                LocalDateTime lastModifiedAt) {
@@ -18,11 +18,13 @@ public record BookSourceRecord(UUID uuid,
     this(null, name, shortcut, null, null);
   }
 
+  public BookSourceRecord(String shortcut) {
+    this(null, null, shortcut, null, null);
+  }
+
   public BookSourceRecord(UUID uuid, String name, String shortcut) {
     this(uuid, name, shortcut, null, null);
   }
-
-
 
   @Override
   public String toString() {

@@ -40,7 +40,7 @@ public class AuthorServiceIT extends AbstractIntegrationTest {
     assertNotNull(result.getUuid());
     assertNotNull(result.getCreatedAt());
     assertNotNull(result.getLastModifiedAt());
-    assertEquals(3, repository.findAll().size());
+    assertTrue(repository.findByUuid(result.getUuid()).isPresent());
   }
 
   @Test

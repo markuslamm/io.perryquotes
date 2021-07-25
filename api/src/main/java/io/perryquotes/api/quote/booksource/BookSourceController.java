@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
-
 @RestController
 public class BookSourceController {
 
@@ -52,7 +50,7 @@ public class BookSourceController {
   {
     var created = bookSourceService.create(request);
     var location = uriBuilder.path("/books/{uuid}").buildAndExpand(created.getUuid()).toUri();
-    log.info(format("Created BookSource at location '%s': %s", location, created));
+    log.info("Created BookSource at location '{}': {}", location, created);
     return ResponseEntity.created(location).body(created.toDTO());
   }
 
@@ -60,7 +58,7 @@ public class BookSourceController {
   public ResponseEntity<BookSourceRecord> update(@PathVariable final UUID uuid,
                                                  @RequestBody final BookSourceRecord request) {
     var updated = bookSourceService.update(uuid, request);
-    log.info(format("Updated BookSource %s: %s", uuid, updated));
+    log.info("Updated BookSource {}: {}", uuid, updated);
     return ResponseEntity.ok(updated.toDTO());
   }
 }

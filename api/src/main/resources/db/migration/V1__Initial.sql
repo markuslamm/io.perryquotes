@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS public.bot_message(
     message_id BIGINT NOT NULL,
     message_date timestamp without time zone NOT NULL,
     text TEXT NOT NULL,
-    processing_status CHARACTER VARYING(20) NOT NULL,
+    processing_state CHARACTER VARYING(20) NOT NULL,
     quote_uuid uuid,
     created_at timestamp without time zone NOT NULL,
     last_modified_at timestamp without time zone NOT NULL,

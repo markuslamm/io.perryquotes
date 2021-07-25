@@ -1,5 +1,6 @@
 package io.perryquotes.api.quote;
 
+import io.perryquotes.api.base.LoggableComponent;
 import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,16 +11,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
-
 @RestController
-public class QuoteController {
+public class QuoteController extends LoggableComponent {
 
-  private final Logger log;
   private final QuoteService quoteService;
 
   public QuoteController(final Logger log, final QuoteService quoteService) {
-    this.log = log;
+    super(log);
     this.quoteService = quoteService;
   }
 
@@ -62,7 +60,7 @@ public class QuoteController {
                                             final UriComponentsBuilder uriBuilder) {
     var created = quoteService.create(request);
     var location = uriBuilder.path("/quotes/{uuid}").buildAndExpand(created.getUuid()).toUri();
-    log.info(format("Created Quote at location '%s': %s", location, created));
+    log.info("Created Quote at location '{}': {}", location, created);
     return ResponseEntity.created(location).body(created.toDTO());
   }
 
@@ -70,14 +68,14 @@ public class QuoteController {
   public ResponseEntity<QuoteRecord> update(@PathVariable final UUID uuid,
                                             @RequestBody final QuoteRecord request) {
     var updated = quoteService.update(uuid, request);
-    log.info(format("Updated Quote %s: %s", uuid, updated));
+    log.info("Updated Quote {}: {}", uuid, updated);
     return ResponseEntity.ok(updated.toDTO());
   }
 
   @PutMapping("/quotes/{uuid}/commit")
   public ResponseEntity<QuoteRecord> commitQuote(@PathVariable final UUID uuid) {
     var committed = quoteService.commitQuote(uuid);
-    log.info(format("Committed Quote %s: %s", uuid, committed));
+    log.info("Committed Quote {}: {}", uuid, committed);
     return ResponseEntity.ok(committed.toDTO());
   }
 }

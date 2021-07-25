@@ -1,5 +1,6 @@
 package io.perryquotes.api.telegram;
 
+import io.perryquotes.api.base.LoggableComponent;
 import io.perryquotes.api.config.TelegramProperties;
 import io.perryquotes.api.quote.Quote;
 import io.perryquotes.api.quote.author.Author;
@@ -12,13 +13,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class TelegramResponseClient {
+public class TelegramResponseClient extends LoggableComponent {
 
-  private final Logger log;
   private final TelegramProperties telegramProperties;
 
   public TelegramResponseClient(final Logger log, final TelegramProperties telegramProperties) {
-    this.log = log;
+    super(log);
     this.telegramProperties = telegramProperties;
   }
 
@@ -31,7 +31,6 @@ public class TelegramResponseClient {
     log.debug("Sending telegram response: {}", fullUrl);
     var response = restTemplate.getForEntity(fullUrl, String.class);
     return response.getStatusCode().is2xxSuccessful();
-
   }
 
   private String createResponseText(final Quote quote) {
@@ -39,7 +38,7 @@ public class TelegramResponseClient {
     if (quoteResult.isPresent()) {
       var successText = """
         Created quote:
-        %s 
+        %s
         Author(s):%s
         BookSource:%s(%s)
         """;

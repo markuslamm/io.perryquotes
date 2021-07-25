@@ -2,9 +2,7 @@ package io.perryquotes.api.telegram;
 
 import io.perryquotes.api.base.BaseEntityService;
 import io.perryquotes.api.error.EntityNotFoundException;
-import io.perryquotes.api.events.BotMessageCreatedEvent;
 import org.slf4j.Logger;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -18,20 +16,14 @@ public class BotMessageService extends BaseEntityService<BotMessage> {
 
   private final BotMessageRepository repository;
 
-  //TODO get rid of this tech details, check DDD
-  private final ApplicationEventPublisher eventPublisher;
-
-
   BotMessageService(final Logger log,
-                    final BotMessageRepository repository,
-                    final ApplicationEventPublisher eventPublisher) {
+                    final BotMessageRepository repository) {
     super(log);
     this.repository = repository;
-    this.eventPublisher = eventPublisher;
   }
 
   @Transactional
-  BotMessage storeMessage(@Valid final IncomingBotMessage update) {
+  public BotMessage create(@Valid final IncomingBotMessage update) {
     var message = update.message();
     var created = repository.save(
       new BotMessage(
@@ -39,15 +31,14 @@ public class BotMessageService extends BaseEntityService<BotMessage> {
         message.messageId(),
         message.messageDate(),
         message.text()));
-    log.debug("BotMessage created: {}, publish BotMessageCreatedEvent", created);
-    eventPublisher.publishEvent(new BotMessageCreatedEvent(this, created));
+    log.debug("BotMessage created: {}", created);
     return created;
   }
 
   @Transactional
   public BotMessage setFailureState(final UUID messageUuid) {
     return repository.findByUuid(messageUuid).map(msg -> repository.save(
-      msg.setProcessingStatus(ProcessingStatus.FAILURE)))
+      msg.setProcessingState(ProcessingStatus.FAILURE)))
       .orElseThrow(() -> new EntityNotFoundException(BotMessage.class, "uuid", messageUuid.toString()));
   }
 
@@ -56,7 +47,7 @@ public class BotMessageService extends BaseEntityService<BotMessage> {
   public BotMessage setSuccessState(final UUID messageUuid, final UUID quoteUuid) {
     return repository.findByUuid(messageUuid).map(msg -> repository.save(
       msg
-        .setProcessingStatus(ProcessingStatus.SUCCESS)
+        .setProcessingState(ProcessingStatus.SUCCESS)
         .setQuoteUuid(quoteUuid)))
       .orElseThrow(() -> new EntityNotFoundException(BotMessage.class, "uuid", messageUuid.toString()));
   }

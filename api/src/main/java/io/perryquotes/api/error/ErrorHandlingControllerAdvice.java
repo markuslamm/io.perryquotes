@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class ErrorHandlingControllerAdvice {
 
   //TODO
-  //EntityNotFoundException, InvalidDataException
+  //EntityNotFoundException, InvalidDataException, ParserException
 
   @ExceptionHandler(ConstraintViolationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)

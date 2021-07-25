@@ -33,8 +33,8 @@ public class BotMessage extends BaseEntity {
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  @Column(name = "processing_status", nullable = false)
-  private ProcessingStatus processingStatus= ProcessingStatus.UNPROCESSED;
+  @Column(name = "processing_state", nullable = false)
+  private ProcessingStatus processingState = ProcessingStatus.UNPROCESSED;
 
   @Column(name = "quote_uuid", updatable = false)
   private UUID quoteUuid = null;
@@ -88,12 +88,12 @@ public class BotMessage extends BaseEntity {
     return this;
   }
 
-  public ProcessingStatus getProcessingStatus() {
-    return processingStatus;
+  public ProcessingStatus getProcessingState() {
+    return processingState;
   }
 
-  public BotMessage setProcessingStatus(final ProcessingStatus processingStatus) {
-    this.processingStatus = processingStatus;
+  public BotMessage setProcessingState(final ProcessingStatus processingStatus) {
+    this.processingState = processingStatus;
     return this;
   }
 
@@ -112,7 +112,7 @@ public class BotMessage extends BaseEntity {
     builder.append("messageId", messageId);
     builder.append("incomingDate", messageDate);
     builder.append("text", text);
-    builder.append("processingStatus", processingStatus);
+    builder.append("processingState", processingState);
     builder.append("quoteUuid", quoteUuid);
   }
 }
