@@ -13,4 +13,6 @@ public interface BotMessageRepository extends JpaRepository<BotMessage, UUID> {
 
   @Query("select bm from BotMessage bm where bm.processingStatus = :status")
   List<BotMessage> findByProcessingStatus(ProcessingStatus status);
+
+  Optional<BotMessage> findByQuoteUuid(UUID quoteUuid);
 }

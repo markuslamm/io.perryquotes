@@ -21,7 +21,6 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -58,7 +57,7 @@ public class QuoteService extends BaseEntityService<Quote> {
     log.debug("Handle BotMessageCreatedEvent: {}", event);
     var quoteResult = createQuoteFromBotMessage(event.getRawBotMessage().getText());
     log.debug("Created Quote from BotMessageCreatedEvent: {}", quoteResult);
-    publisher.publishEvent(new BotMessageProcessedEvent(this, event.getRawBotMessage().getUuid(), Optional.ofNullable(quoteResult)));
+    publisher.publishEvent(new BotMessageProcessedEvent(this, event.getRawBotMessage(), quoteResult));
     return quoteResult;
   }
 
@@ -116,7 +115,10 @@ public class QuoteService extends BaseEntityService<Quote> {
       log.debug("Created quote from Telegram update: {}", created);
       return created;
     } catch (ParserException ex) {
-      log.warn("Unable to create Quote: {}", ex.getMessage());
+      log.warn("Unable to parse BotMessage: {}", ex.getMessage());
+      return null;
+    } catch (Exception ex) {
+      log.warn("Unable to create Quote from BotMessage: {}", ex.getMessage());
       return null;
     }
   }
@@ -125,8 +127,6 @@ public class QuoteService extends BaseEntityService<Quote> {
     return parsedAuthors.stream()
       .map(a -> authorService.findByName(a).orElse(authorService.create(new AuthorRecord(a))))
       .collect(Collectors.toSet());
-
-
   }
 
   private BookSource getBookSource(String parsedBookSource) {
@@ -136,12 +136,22 @@ public class QuoteService extends BaseEntityService<Quote> {
   }
 
   private AuthorsBookSourceTuple getAuthorsAndBookSource(final QuoteRecord quoteData) {
-    var authors = authorService.findByUuids(quoteData.authorUuids());
+
+    var authorUuids = quoteData.authors()
+      .stream()
+      .map(AuthorRecord::uuid)
+      .collect(Collectors.toSet());
+
+    var authors = authorService.findByUuids(authorUuids);
     if (authors.isEmpty()) {
-      throw new EntityNotFoundException(Author.class, "uuid", quoteData.authorUuids());
+      throw new EntityNotFoundException(Author.class, "uuid", authorUuids);
     }
-    var bookSource = bookSourceService.findByUuid(quoteData.bookSourceUuid())
-      .orElseThrow(() -> new EntityNotFoundException(BookSource.class, "uuid", quoteData.bookSourceUuid().toString()));
+    var bookSource = bookSourceService.findByUuid(quoteData.bookSource().uuid())
+      .orElseThrow(() -> new EntityNotFoundException(
+        BookSource.class,
+        "uuid",
+        quoteData.bookSource().uuid().toString()));
+
     return new AuthorsBookSourceTuple(authors, bookSource);
   }
 

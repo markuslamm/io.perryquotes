@@ -11,7 +11,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,9 +31,8 @@ public class AuthorRepositoryIT extends AbstractIntegrationTest {
 
   @BeforeEach
   public void setUp() {
-    var author1 = entityManager.persist(new Author("Author1"));
-    var author2 = entityManager.persist(new Author("Author2"));
-
+    entityManager.persist(new Author("Author1"));
+    entityManager.persist(new Author("Author2"));
     entityManager.flush();
   }
 
@@ -40,7 +41,7 @@ public class AuthorRepositoryIT extends AbstractIntegrationTest {
     getExistingAuthors().forEach(existing -> {
       var result = authorRepository.findByUuid(existing.getUuid());
       assertTrue(result.isPresent());
-      assertEquals(result.get().getUuid(), existing.getUuid());
+      assertEquals(existing, result.get());
     });
   }
 
@@ -54,7 +55,7 @@ public class AuthorRepositoryIT extends AbstractIntegrationTest {
     getExistingAuthors().forEach(existing -> {
       var result = authorRepository.findByName(existing.getName());
       assertTrue(result.isPresent());
-      assertEquals(result.get().getName(), existing.getName());
+      assertEquals(existing, result.get());
     });
   }
 
@@ -63,10 +64,45 @@ public class AuthorRepositoryIT extends AbstractIntegrationTest {
     assertTrue(authorRepository.findByName("Unknown").isEmpty());
   }
 
-  @SuppressWarnings("unchecked")
+  @Test
+  public void testFindByNameIn() {
+    var existingNames = getExistingAuthors().stream().map(Author::getName).collect(Collectors.toSet());
+    var result = authorRepository.findByNameIn(existingNames);
+    assertEquals(2, result.size());
+
+    getExistingAuthors()
+      .forEach(existing -> {
+        assertEquals(1, authorRepository.findByNameIn(Set.of(existing.getName())).size());
+      });
+  }
+
+  @Test
+  public void testFindByNameInNotFound() {
+    assertTrue(authorRepository.findByNameIn(Set.of("Unknown1")).isEmpty());
+    assertTrue(authorRepository.findByNameIn(Set.of("Unknown1", "Unknown2")).isEmpty());
+    assertTrue(authorRepository.findByNameIn(Set.of()).isEmpty());
+  }
+
+  @Test
+  public void testFindByUuidIn() {
+    var existingUuids = getExistingAuthors().stream().map(Author::getUuid).collect(Collectors.toSet());
+    var result = authorRepository.findByUuidIn(existingUuids);
+    assertEquals(2, result.size());
+
+    getExistingAuthors()
+      .forEach(existing -> {
+        assertEquals(1, authorRepository.findByUuidIn(Set.of(existing.getUuid())).size());
+      });
+  }
+
+  @Test
+  public void testFindByUuidInNotFound() {
+    assertTrue(authorRepository.findByUuidIn(Set.of(UUID.randomUUID())).isEmpty());
+    assertTrue(authorRepository.findByUuidIn(Set.of(UUID.randomUUID(), UUID.randomUUID())).isEmpty());
+    assertTrue(authorRepository.findByUuidIn(Set.of()).isEmpty());
+  }
+
   private List<Author> getExistingAuthors() {
-    return (List<Author>) entityManager.getEntityManager()
-      .createQuery("SELECT a FROM Author a")
-      .getResultList();
+    return entityManager.getEntityManager().createQuery("SELECT a FROM Author a", Author.class).getResultList();
   }
 }

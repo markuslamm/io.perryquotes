@@ -38,7 +38,7 @@ public class BookSourceService extends BaseEntityService<BookSource> {
       throw new InvalidDataException(format("Book with name %s already exists", name));
     }
     if (bookSourceRepository.findByShortcut(shortcut).isPresent()) {
-      throw new InvalidDataException(format("Book with abbreviation %s already exists", shortcut));
+      throw new InvalidDataException(format("Book with shortcut %s already exists", shortcut));
     }
     var created = bookSourceRepository.save(new BookSource(name, shortcut));
     log.debug(format("Created BookSource: %s", created));

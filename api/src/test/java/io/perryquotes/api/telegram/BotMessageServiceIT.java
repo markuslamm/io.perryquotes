@@ -2,8 +2,10 @@ package io.perryquotes.api.telegram;
 
 import io.perryquotes.api.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -12,8 +14,9 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Transactional
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Transactional //necessary for automatic rollback after each test
 public class BotMessageServiceIT extends AbstractIntegrationTest {
 
   @Autowired
@@ -24,6 +27,7 @@ public class BotMessageServiceIT extends AbstractIntegrationTest {
 
   private static final String VALID_MSG_TEXT = """
     @Perry@ Hallo hallo
+    @Thora@ Hallo Perry.
     #SB1
     """;
 
@@ -36,7 +40,7 @@ public class BotMessageServiceIT extends AbstractIntegrationTest {
     assertNotNull(result.getQuoteUuid());
     assertEquals(1, entityManager.createQuery("SELECT bm FROM BotMessage bm").getResultList().size());
     assertEquals(1, entityManager.createQuery("SELECT q FROM Quote q").getResultList().size());
-    assertEquals(1, entityManager.createQuery("SELECT a FROM Author a").getResultList().size());
+    assertEquals(2, entityManager.createQuery("SELECT a FROM Author a").getResultList().size());
   }
 
   @Test

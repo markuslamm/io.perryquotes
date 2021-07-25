@@ -31,7 +31,6 @@ public class BookSourceRepositoryIT extends AbstractIntegrationTest {
   public void setUp() {
     entityManager.persist(new BookSource("Source1", "AB1"));
     entityManager.persist(new BookSource("Source2", "AB2"));
-
     entityManager.flush();
   }
 
@@ -40,7 +39,7 @@ public class BookSourceRepositoryIT extends AbstractIntegrationTest {
     getExistingSources().forEach(existing -> {
       var result = bookSourceRepository.findByUuid(existing.getUuid());
       assertTrue(result.isPresent());
-      assertEquals(result.get().getUuid(), existing.getUuid());
+      assertEquals(existing, result.get());
     });
   }
 
@@ -54,19 +53,31 @@ public class BookSourceRepositoryIT extends AbstractIntegrationTest {
     getExistingSources().forEach(existing -> {
       var result = bookSourceRepository.findByShortcut(existing.getShortcut());
       assertTrue(result.isPresent());
-      assertEquals(result.get().getShortcut(), existing.getShortcut());
+      assertEquals(existing, result.get());
     });
   }
 
   @Test
   public void testFindByShortcutNotFound() {
-    assertTrue(bookSourceRepository.findByShortcut("XYZ").isEmpty());
+    assertTrue(bookSourceRepository.findByShortcut("XYZ1").isEmpty());
   }
 
-  @SuppressWarnings("unchecked")
+
+  @Test
+  public void testFindByName() {
+    getExistingSources().forEach(existing -> {
+      var result = bookSourceRepository.findByName(existing.getName());
+      assertTrue(result.isPresent());
+      assertEquals(existing, result.get());
+    });
+  }
+
+  @Test
+  public void testFindByNameNotFound() {
+    assertTrue(bookSourceRepository.findByName("Unknown name").isEmpty());
+  }
+
   private List<BookSource> getExistingSources() {
-    return (List<BookSource>) entityManager.getEntityManager()
-      .createQuery("SELECT bs FROM BookSource bs")
-      .getResultList();
+    return entityManager.getEntityManager().createQuery("SELECT bs FROM BookSource bs", BookSource.class).getResultList();
   }
 }

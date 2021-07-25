@@ -32,11 +32,11 @@ public class AuthorService extends BaseEntityService<Author> {
   }
 
   public Set<Author> findByUuids(final Set<UUID> uuids) {
-    return repository.findAllByUuidIn(uuids);
+    return repository.findByUuidIn(uuids);
   }
 
   public Set<Author> findByNames(final Set<String> names) {
-    return repository.findAllByNameIn(names);
+    return repository.findByNameIn(names);
   }
 
   @Transactional

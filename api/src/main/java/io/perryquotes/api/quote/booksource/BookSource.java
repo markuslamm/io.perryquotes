@@ -19,7 +19,7 @@ public class BookSource extends BaseEntity {
 
   protected BookSource() {}
 
-  BookSource(final String name, final String shortcut) {
+  public BookSource(final String name, final String shortcut) {
     this.name = name;
     this.shortcut = shortcut;
   }
@@ -46,11 +46,11 @@ public class BookSource extends BaseEntity {
     return new BookSourceRecord(uuid, name, shortcut, createdAt, lastModifiedAt);
   }
 
-  String getShortcut() {
+  public String getShortcut() {
     return shortcut;
   }
 
-  BookSource setShortcut(final String shortcut) {
+  public BookSource setShortcut(final String shortcut) {
     this.shortcut = shortcut;
     return this;
   }

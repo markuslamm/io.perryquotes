@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class BotMessageProcessedListener {
 
@@ -22,11 +24,11 @@ public class BotMessageProcessedListener {
   @EventListener
   public void handMessageProcessed(final BotMessageProcessedEvent event) {
     log.debug("Received BotMessageProcessedEvent:" + event);
-    var processedMessage = event.getQuote()
-      .map(q -> botMessageService.setSuccessState(event.getBotMessageUuid(), q.getUuid()))
-      .orElse(botMessageService.setFailureState(event.getBotMessageUuid()));
+    var processedMessage = Optional.ofNullable(event.getQuoteResult())
+      .map(q -> botMessageService.setSuccessState(event.getBotMessage().getUuid(), q.getUuid()))
+      .orElse(botMessageService.setFailureState(event.getBotMessage().getUuid()));
     log.info("Set BotMessage processing state: {}", processedMessage);
-    var responseStatus = telegramResponseClient.sendTelegramResponse(event.getBotMessageUuid(), event.getQuote());
+    var responseStatus = telegramResponseClient.sendTelegramResponse(event.getQuoteResult());
     log.info("Send Telegram response: {}", responseStatus);
   }
 }

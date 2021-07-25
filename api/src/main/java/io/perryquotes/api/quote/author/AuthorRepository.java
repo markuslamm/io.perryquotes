@@ -12,7 +12,7 @@ public interface AuthorRepository extends JpaRepository<Author, UUID> {
 
   Optional<Author> findByName(final String name);
 
-  Set<Author> findAllByNameIn(final Set<String> names);
+  Set<Author> findByNameIn(final Set<String> names);
 
-  Set<Author> findAllByUuidIn(final Set<UUID> uuids);
+  Set<Author> findByUuidIn(final Set<UUID> uuids);
 }

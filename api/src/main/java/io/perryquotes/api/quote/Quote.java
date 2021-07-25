@@ -141,7 +141,7 @@ public class Quote extends BaseEntity {
 
   public QuoteRecord toDTO() {
     return new QuoteRecord(uuid, text,
-      authors.stream().map(Author::getUuid).collect(Collectors.toSet()),
-      bookSource.getUuid(), quoteState, createdAt, lastModifiedAt);
+      authors.stream().map(Author::toDTO).collect(Collectors.toSet()),
+      bookSource.toDTO(), quoteState, createdAt, lastModifiedAt);
   }
 }
