@@ -15,7 +15,7 @@ class AuthorController {
     @GetMapping("/authors")
     fun listAuthors(): String {
         logger.debug { "GET /authors, AuthorController.listAuthors" }
-        return ""
+        return "authors/author-list"
     }
 
     @GetMapping("/authors/form")
