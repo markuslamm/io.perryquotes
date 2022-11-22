@@ -28,6 +28,7 @@
 		<java.version>17</java.version>
 		<kotlin.version>1.6.21</kotlin.version>
 		<testcontainers.version>1.17.6</testcontainers.version>
+		<kotlin.logging.version>3.0.4</kotlin.logging.version>
 	</properties>
 
 	<developers>
@@ -37,6 +38,14 @@
 			<email>markus.lamm@gmail.com</email>
 		</developer>
 	</developers>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.github.microutils</groupId>
+			<artifactId>kotlin-logging-jvm</artifactId>
+			<version>${kotlin.logging.version}</version>
+		</dependency>
+	</dependencies>
 
 	<scm>
 		<connection>scm:git:git@github.com:markuslamm/io.perryquotes.git</connection>
