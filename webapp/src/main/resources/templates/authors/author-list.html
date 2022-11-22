@@ -8,22 +8,12 @@
 </head>
 <body>
 <div class="container">
-    <header class="d-flex justify-content-center py-3">
-        <ul class="nav nav-pills">
-            <li class="nav-item"><a href="#" th:href="@{/}" class="nav-link">Home</a></li>
-            <li class="nav-item"><a href="#" th:href="@{/quotes}" class="nav-link">Quotes</a></li>
-            <li class="nav-item"><a href="#" th:href="@{/authors}" class="nav-link">Authors</a></li>
-            <li class="nav-item"><a href="#" th:href="@{/sources}" class="nav-link">Sources</a></li>
-            <li class="nav-item"><a href="#" th:href="@{/about}" class="nav-link">About</a></li>
-        </ul>
-        <div class="col-md-3 text-end">
-            <a class="btn btn-primary" href="#" th:href="@{/login}" role="button">Login</a>
-            <a class="btn btn-primary" href="#" th:href="@{/signup}" role="button">Sign up</a>
-        </div>
+    <header th:replace="layout-fragments::header">
     </header>
     <div class="row">
         <h3>author list</h3>
     </div>
+    <div th:replace="layout-fragments::footer"></div>
 </div>
 <script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.min.js}"></script>
 <script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script>
