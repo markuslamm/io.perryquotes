@@ -2,7 +2,10 @@ package io.perryquotes.webapp.author
 
 import mu.KLogging
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
+import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import java.util.*
@@ -19,15 +22,16 @@ class AuthorController {
     }
 
     @GetMapping("/authors/form")
-    fun createAuthorForm(): String {
+    fun createAuthorForm(model: Model): String {
         logger.debug { "GET /authors/form, AuthorController.createAuthorForm" }
-        return ""
+        model["author"] = AuthorForm();
+        return "authors/author-form"
     }
 
     @PostMapping("/authors")
-    fun submitCreateForm(): String {
-        logger.debug { "POST /authors, AuthorController.submitCreateForm" }
-        return ""
+    fun submitCreateForm(@ModelAttribute form: AuthorForm,): String {
+        logger.debug { "POST /authors, AuthorController.submitCreateForm, form=$form" }
+        return "redirect:/authors"
     }
 
     @GetMapping("/authors/{uuid}/form")
