@@ -1,76 +1,80 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main-layout}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>io.perryquotes - signup</title>
-    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css} "/>
+    <title>signup</title>
 </head>
 <body>
-<div class="container">
-    <header th:replace="layout-fragments::header">
-    </header>
-    <div class="row">
-        <h3>signup</h3>
-        <form action="#" class="needs-validation" novalidate>
-            <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="firstname" name="firstname" required>
-                <label for="firstname">Firstname:</label>
-                <div class="invalid-feedback">firstname is required</div>
+
+<section class="my-5" layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Sign up</h1>
             </div>
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="lastname" name="lastname" required>
-                <label for="lastname">Lastname:</label>
-                <div class="invalid-feedback">lastname is required</div>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="email" name="email" required>
-                <label for="email">Email:</label>
-                <div class="invalid-feedback">email is required</div>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="password" class="form-control" id="password" name="password" required>
-                <label for="password">Password:</label>
-                <div class="invalid-feedback">password is required</div>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
-                <label for="password_confirm">Confirm Password:</label>
-                <div class="invalid-feedback">password confirmation is required</div>
-            </div>
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="agreement_check" required>
-                    <label class="form-check-label" for="agreement_check">Agree to terms and conditions</label>
-                    <div class="invalid-feedback">You must agree before signing up.</div>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Sign up</button>
-        </form>
+            <div class="col-md-12">
+                <form action="#" class="needs-validation" novalidate>
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" id="firstname" name="firstname" required>
+                        <label for="firstname">Firstname:</label>
+                        <div class="invalid-feedback">firstname is required</div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="lastname" name="lastname" required>
+                        <label for="lastname">Lastname:</label>
+                        <div class="invalid-feedback">lastname is required</div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <label for="email">Email:</label>
+                        <div class="invalid-feedback">email is required</div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <label for="password">Password:</label>
+                        <div class="invalid-feedback">password is required</div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+                        <label for="password_confirm">Confirm Password:</label>
+                        <div class="invalid-feedback">password confirmation is required</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="agreement_check" required>
+                            <label class="form-check-label" for="agreement_check">Agree to terms and conditions</label>
+                            <div class="invalid-feedback">You must agree before signing up.</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign up</button>
+                </form>            </div>
+        </div>
     </div>
-    <div th:replace="layout-fragments::footer"></div>
-</div>
-<script>
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
-    (function() {
-        'use strict';
-        window.addEventListener('load', function() {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
-</script>
-<script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.min.js}"></script>
-<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script>
+</section>
+
+<th:block layout:fragment="optional">
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+</th:block>
 </body>
 </html>

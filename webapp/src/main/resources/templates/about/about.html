@@ -1,21 +1,21 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main-layout}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>io.perryquotes - about</title>
-    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css} "/>
+    <title>about</title>
 </head>
 <body>
-<div class="container">
-    <header th:replace="layout-fragments::header">
-    </header>
-    <div class="row">
-        <h3>about</h3>
+<section class="my-5" layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>About</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur [....]</p>
+            </div>
+        </div>
     </div>
-    <div th:replace="layout-fragments::footer"></div>
-</div>
-<script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.min.js}"></script>
-<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script>
+</section>
 </body>
 </html>

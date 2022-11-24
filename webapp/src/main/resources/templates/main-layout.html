@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">io.perryquotes</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css} "/>
+</head>
+<body>
+<header class="d-flex py-3" th:fragment="header">
+    <ul class="nav nav-pills">
+        <li class="nav-item"><a href="#" th:href="@{/}" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="#" th:href="@{/quotes}" class="nav-link">Quotes</a></li>
+        <li class="nav-item"><a href="#" th:href="@{/authors}" class="nav-link">Authors</a></li>
+        <li class="nav-item"><a href="#" th:href="@{/sources}" class="nav-link">Sources</a></li>
+        <li class="nav-item"><a href="#" th:href="@{/about}" class="nav-link">About</a></li>
+    </ul>
+    <div class="col-md-3 text-end">
+        <a class="btn btn-primary" href="#" th:href="@{/login}" role="button">Login</a>
+        <a class="btn btn-primary" href="#" th:href="@{/signup}" role="button">Sign up</a>
+    </div>
+</header>
+
+<section layout:fragment="content">
+    <p>This is filled by the content template.</p>
+</section>
+
+<footer class="d-flex py-3 border-top">
+    <div class="col-md-4 d-flex">
+        <span class="text-muted">&copy; 2022 io.perryquotes</span>
+    </div>
+    <ul class="col-md-4 justify-content-end list-unstyled d-flex">
+        <li class="ms-3"><a class="text-muted" href="#">Twitter</a></li>
+    </ul>
+</footer>
+<script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script>
+
+<th:block layout:fragment="optional" />
+</body>
+</html>
