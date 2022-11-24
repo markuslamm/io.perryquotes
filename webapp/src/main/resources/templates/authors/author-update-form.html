@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main-layout}">
+<head>
+    <title>author form</title>
+</head>
+<body>
+<section class="my-5" layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Edit author</h1>
+            </div>
+            <div class="col-md-12">
+                <form action="#" class="needs-validation" novalidate method="post" th:object="${author}" th:action="@{/authors}">
+                    <div class="mb-3 mt-3">
+                        <label for="author_uuid">Uuid</label>
+                        <input type="text" class="form-control" id="author_uuid" name="author_uuid" th:field="*{uuid}" disabled>
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label for="author_created_date">Created date</label>
+                        <input type="text" class="form-control" id="author_created_date" name="author_created_date" th:field="*{createdDate}"  disabled>
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label for="author_modified_date">Last Modified date</label>
+                        <input type="text" class="form-control" id="author_modified_date" name="author_modified_date" th:field="*{lastModifiedDate}" disabled>
+                    </div>
+
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" id="author_name" name="author_name" required th:field="*{name}">
+                        <label for="author_name">Name</label>
+                        <div class="invalid-feedback">author name is required</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="optional">
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+</th:block>
+
+</body>
+</html>

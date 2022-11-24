@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping
 import java.util.*
 
 @Controller
-class AuthorController {
+class AuthorController(private val authorClient: AuthorClient) {
 
     companion object : KLogging()
 
     @GetMapping("/authors")
-    fun listAuthors(): String {
+    fun listAuthors(model: Model): String {
         logger.debug { "GET /authors, AuthorController.listAuthors" }
+        model["authors"] = authorClient.getAllAuthors()
         return "authors/author-list"
     }
 
@@ -25,7 +26,7 @@ class AuthorController {
     fun createAuthorForm(model: Model): String {
         logger.debug { "GET /authors/form, AuthorController.createAuthorForm" }
         model["author"] = AuthorForm();
-        return "authors/author-form"
+        return "authors/author-create-form"
     }
 
     @PostMapping("/authors")
@@ -35,9 +36,11 @@ class AuthorController {
     }
 
     @GetMapping("/authors/{uuid}/form")
-    fun updateAuthorForm(@PathVariable uuid: UUID): String {
+    fun updateAuthorForm(@PathVariable uuid: UUID, model: Model): String {
         logger.debug { "GET /authors/$uuid/form, AuthorController.updateAuthorForm" }
-        return ""
+        val existing = authorClient.getAuthorByUuid(uuid) ?: throw IllegalArgumentException("No Author[uuid=$uuid] found")
+        model["author"] = AuthorForm(existing.name, existing.uuid, existing.createdDate, existing.lastModifiedDate);
+        return "authors/author-update-form"
     }
 
     @PostMapping("/authors/{uuid}")

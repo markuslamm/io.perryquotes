@@ -19,6 +19,7 @@
                 <a class="btn btn-primary" href="#" th:href="@{/authors/form}" role="button">Create new author</a>
             </div>
         </div>
+
         <div class="row">
             <div class="col-12">
                 <table class="table table-striped table-hover">
@@ -31,17 +32,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>4bb8061f-cf76-4635-bc12-345fce6d15df</td>
-                        <td>Perry Rhodan</td>
-                        <td>2022-01-21T05:47:08.644</td>
-                        <td>2022-01-21T05:47:08.644</td>
+
+                    <tr th:if="${#lists.isEmpty(authors)}">
+                        <td colspan="4">No Authors available </td>
                     </tr>
-                    <tr>
-                        <td>1d167423-d835-43d9-a4f4-050b39b43642</td>
-                        <td>Atlan</td>
-                        <td>2022-01-21T05:47:08.644</td>
-                        <td>2022-01-21T05:47:08.644</td>
+
+                    <tr th:each="author : ${authors}">
+                        <td><a th:text="${author.uuid}" th:href="@{/authors/{uuid}/form(uuid=${author.uuid})}">1d167423-d835-43d9-a4f4-050b39b43642</a></td>
+                        <td th:text="${author.name}">Perry Rhodan</td>
+                        <td th:text="${author.createdDate}">2022-01-21T05:47:08.644</td>
+                        <td th:text="${author.lastModifiedDate}">2022-01-21T05:47:08.644</td>
                     </tr>
                     </tbody>
                 </table>
