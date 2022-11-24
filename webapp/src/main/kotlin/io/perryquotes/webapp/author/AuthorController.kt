@@ -30,8 +30,10 @@ class AuthorController(private val authorClient: AuthorClient) {
     }
 
     @PostMapping("/authors")
-    fun submitCreateForm(@ModelAttribute form: AuthorForm,): String {
-        logger.debug { "POST /authors, AuthorController.submitCreateForm, form=$form" }
+    fun submitCreateForm(@ModelAttribute authorForm: AuthorForm): String {
+        logger.debug { "POST /authors, AuthorController.submitCreateForm, authorForm=$authorForm" }
+        val createdAuthor = authorClient.createAuthor(authorForm)
+        logger.info { "Created Author: $createdAuthor" }
         return "redirect:/authors"
     }
 
@@ -44,10 +46,11 @@ class AuthorController(private val authorClient: AuthorClient) {
     }
 
     @PostMapping("/authors/{uuid}")
-    fun submitUpdateForm(@PathVariable uuid: UUID): String {
+    fun submitUpdateForm(@PathVariable uuid: UUID, @ModelAttribute authorForm: AuthorForm): String {
         logger.debug { "POST /authors/$uuid, AuthorController.submitUpdateForm" }
-        return ""
-    }
+        val updatedAuthor = authorClient.updateAuthor(uuid, authorForm)
+        logger.info { "Updated Author: $updatedAuthor" }
+        return "redirect:/authors"    }
 
     @PostMapping("/authors/{uuid}/delete")
     fun deleteAuthor(@PathVariable uuid: UUID): String {
