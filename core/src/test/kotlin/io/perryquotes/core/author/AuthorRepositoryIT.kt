@@ -1,7 +1,7 @@
 package io.perryquotes.core.author
 
 import io.perryquotes.core.TestCoreConfig
-import io.perryquotes.core.TestDataProvider
+import io.perryquotes.core.TestDataProvider.Companion.createAndGetAuthorList
 import io.perryquotes.core.jooq.tables.Author.Companion.AUTHOR
 import io.perryquotes.core.jooq.tables.pojos.AuthorEntity
 import io.perryquotes.testutils.WithPostgresContainer
@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jooq.JooqTest
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.ContextConfiguration
-import java.util.*
+import java.util.UUID.randomUUID
 
 @JooqTest
 @ContextConfiguration(initializers = [WithPostgresContainer::class], classes = [TestCoreConfig::class])
-class AuthorRepositoryIT {
+internal class AuthorRepositoryIT {
 
     @Autowired
     private lateinit var testee: AuthorRepository
@@ -27,13 +27,13 @@ class AuthorRepositoryIT {
 
     @Test
     fun `should return all Author entities`() {
-        val authors = TestDataProvider.createAndGetAuthorList(dslContext)
+        val authors = createAndGetAuthorList(dslContext)
         assertThat(testee.findAll()).hasSize(authors.size)
     }
 
     @Test
     fun `find by existing uuid should return correct Author from a given entity list`() {
-        TestDataProvider.createAndGetAuthorList(dslContext).forEach { author ->
+        createAndGetAuthorList(dslContext).forEach { author ->
             testee.findByUuid(author.uuid!!)?.let {
                 assertThat(it).isNotNull
                 assertThat(it).isEqualTo(author)
@@ -43,12 +43,12 @@ class AuthorRepositoryIT {
 
     @Test
     fun `find by unknown UUID should be null`() {
-        assertThat(testee.findByUuid(UUID.randomUUID())).isNull()
+        assertThat(testee.findByUuid(randomUUID())).isNull()
     }
 
     @Test
     fun `find by existing name should return correct Author from a given entity list`() {
-        TestDataProvider.createAndGetAuthorList(dslContext).forEach { author ->
+        createAndGetAuthorList(dslContext).forEach { author ->
             testee.findByName(author.name!!)?.let {
                 assertThat(it).isNotNull
                 assertThat(it).isEqualTo(author)
@@ -84,14 +84,14 @@ class AuthorRepositoryIT {
 
     @Test
     fun `create Author with existing name should throw DataIntegrityViolationException`() {
-        val existing = TestDataProvider.createAndGetAuthorList(dslContext).last()
+        val existing = createAndGetAuthorList(dslContext).last()
         val author = AuthorEntity(name = existing.name)
         assertThatThrownBy { testee.create(author) }.isInstanceOf(DataIntegrityViolationException::class.java)
     }
 
     @Test
     fun `should update Author entity`() {
-        val existing = TestDataProvider.createAndGetAuthorList(dslContext).last()
+        val existing = createAndGetAuthorList(dslContext).last()
         val author = AuthorEntity(uuid = existing.uuid, name = "New Name")
 
         val update = testee.update(author)
@@ -109,7 +109,7 @@ class AuthorRepositoryIT {
     @Test
     fun `update Author with existing name should throw DataIntegrityViolationException`() {
 
-        val existing = TestDataProvider.createAndGetAuthorList(dslContext)
+        val existing = createAndGetAuthorList(dslContext)
         val toUpdate = existing.last()
         val conflictingName = existing.first().name
         val authorRequest = AuthorEntity(uuid = toUpdate.uuid, name = conflictingName)
@@ -120,8 +120,7 @@ class AuthorRepositoryIT {
 
     @Test
     fun `should delete Author entity`() {
-        val existing = TestDataProvider.createAndGetAuthorList(dslContext)
-        val toDelete = existing.last()
+        val toDelete = createAndGetAuthorList(dslContext).last()
 
         testee.delete(toDelete.uuid!!)
 
@@ -132,5 +131,4 @@ class AuthorRepositoryIT {
                 .execute()
         ).isEqualTo(0)
     }
-
 }
