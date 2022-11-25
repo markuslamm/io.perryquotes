@@ -14,7 +14,7 @@
                 <h1>Edit author</h1>
             </div>
             <div class="col-md-12">
-                <form action="#" class="needs-validation" novalidate method="post" th:object="${author}" th:action="@{/authors}">
+                <form action="#" class="needs-validation" novalidate method="post" th:object="${author}" th:action="@{/authors/{uuid}(uuid=${author.uuid})}">
                     <div class="mb-3 mt-3">
                         <label for="author_uuid">Uuid</label>
                         <input type="text" class="form-control" id="author_uuid" name="author_uuid" th:field="*{uuid}" disabled>

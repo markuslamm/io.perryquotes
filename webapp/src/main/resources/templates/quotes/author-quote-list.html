@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main-layout}">
+<head>
+    <title>quotes</title>
+</head>
+<body>
+<section class="my-5" layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 th:text="'Quotes of ' + ${selected_author}">Quotes of Perry</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur [....]</p>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

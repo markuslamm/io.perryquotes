@@ -29,6 +29,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Created</th>
                         <th scope="col">Last modified</th>
+                        <th scope="col">&nbsp;</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -42,6 +43,7 @@
                         <td th:text="${author.name}">Perry Rhodan</td>
                         <td th:text="${author.createdDate}">2022-01-21T05:47:08.644</td>
                         <td th:text="${author.lastModifiedDate}">2022-01-21T05:47:08.644</td>
+                        <td><a class="btn btn-primary" href="#" th:href="@{/quotes/author(name=${author.name})}" role="button">View Quotes</a></td>
                     </tr>
                     </tbody>
                 </table>

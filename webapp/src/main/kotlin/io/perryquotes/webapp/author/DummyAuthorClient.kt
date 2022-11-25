@@ -28,7 +28,7 @@ class DummyAuthorClient : AuthorClient {
         icho.uuid to icho)
 
     override fun getAllAuthors(): List<Author> {
-        return authors.values.toList()
+        return authors.values.sortedBy { it.name }.toList()
     }
 
     override fun getAuthorByUuid(uuid: UUID): Author? {
@@ -42,7 +42,7 @@ class DummyAuthorClient : AuthorClient {
     }
 
     override fun updateAuthor(uuid: UUID, authorForm: AuthorForm): Author {
-        val existing = authors[uuid] ?: throw IllegalArgumentException("No Author[uuid=$uuid] found")
+        val existing = authors[uuid] ?: throw IllegalArgumentException("Author[uuid=$uuid] found")
         authors[uuid] = existing.copy(name = authorForm.name!!, lastModifiedDate = LocalDateTime.now())
         return authors[uuid]!!
     }
