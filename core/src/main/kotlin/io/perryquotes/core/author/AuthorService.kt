@@ -18,4 +18,6 @@ class AuthorService(private val repository: AuthorRepository) {
         logger.debug { "AuthorService.getByUuid = $uuid" }
         return repository.findByUuid(uuid)
     }
+
+
 }

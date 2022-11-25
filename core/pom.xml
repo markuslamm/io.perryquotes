@@ -223,6 +223,7 @@
 								<password>${db.password}</password>
 							</jdbc>
 							<generator>
+								<name>org.jooq.codegen.KotlinGenerator</name>
 								<strategy>
 									<matchers>
 										<tables>
