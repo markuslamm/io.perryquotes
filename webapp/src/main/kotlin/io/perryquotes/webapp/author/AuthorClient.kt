@@ -1,6 +1,5 @@
 package io.perryquotes.webapp.author
 
-import org.springframework.http.ResponseEntity
 import java.time.LocalDateTime
 import java.util.*
 
@@ -13,7 +12,7 @@ interface AuthorClient {
         val lastModifiedDate: LocalDateTime = LocalDateTime.now()
     )
 
-    fun getAllAuthors(): ResponseEntity<List<Author>>?
+    fun getAllAuthors(): List<Author>
     fun getAuthorByUuid(uuid: UUID): Author?
 
     fun createAuthor(authorForm: AuthorForm): Author

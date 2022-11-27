@@ -12,7 +12,7 @@ class WebClientConfig {
     @Bean
     fun webClient(builder: WebClient.Builder): WebClient {
         return builder
-            .baseUrl("http://localhost:8080") //TODO use API ConfigProperties
+            .baseUrl("http://localhost:9000") //TODO use API ConfigProperties
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .build()
     }

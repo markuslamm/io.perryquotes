@@ -40,7 +40,7 @@ class AuthorController(private val authorClient: AuthorClient) {
     @GetMapping("/authors/{uuid}/form")
     fun updateAuthorForm(@PathVariable uuid: UUID, model: Model): String {
         logger.debug { "GET /authors/$uuid/form, AuthorController.updateAuthorForm" }
-        val existing = authorClient.getAuthorByUuid(uuid) ?: throw IllegalArgumentException("No Author[uuid=$uuid] found")
+        val existing = authorClient.getAuthorByUuid(uuid) ?: throw IllegalArgumentException("Author[uuid=$uuid] found")
         model["author"] = AuthorForm(existing.name, existing.uuid, existing.createdDate, existing.lastModifiedDate)
         return "authors/author-update-form"
     }
