@@ -56,7 +56,7 @@ class AuthorController(private val authorService: AuthorService) {
     fun deleteSource(@PathVariable uuid: UUID): ResponseEntity<Unit> {
         logger.debug { "Handle request DELETE /authors/$uuid" }
         val deleted = authorService.delete(uuid)
-        logger.info { "Updated Author[uuid=$deleted]" }
+        logger.info { "Deleted Author[uuid=$uuid]: $deleted" }
         return ResponseEntity.noContent().build()
     }
 }
