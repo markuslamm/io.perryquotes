@@ -30,6 +30,7 @@
 		<testcontainers.version>1.17.6</testcontainers.version>
 		<kotlin.logging.version>3.0.4</kotlin.logging.version>
 		<jooq.version>3.17.5</jooq.version>
+		<springmockk.version>3.1.1</springmockk.version>
 	</properties>
 
 	<developers>
@@ -45,6 +46,13 @@
 			<groupId>io.github.microutils</groupId>
 			<artifactId>kotlin-logging-jvm</artifactId>
 			<version>${kotlin.logging.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ninja-squad</groupId>
+			<artifactId>springmockk</artifactId>
+			<version>${springmockk.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

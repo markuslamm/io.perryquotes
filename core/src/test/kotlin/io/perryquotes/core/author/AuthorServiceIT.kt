@@ -39,7 +39,7 @@ internal class AuthorServiceIT {
         createAndGetAuthorList(dslContext).forEach { author ->
             testee.getByUuid(author.uuid!!)?.let {
                 assertThat(it).isNotNull
-                assertThat(it).isEqualTo(author)
+                assertThat(it).isEqualTo(author.toModel())
             }
         }
     }
@@ -63,10 +63,11 @@ internal class AuthorServiceIT {
             assertThat(createdDate).isEqualTo(lastModifiedDate)
         }
 
-        assertThat(dslContext
-            .selectFrom(Author.AUTHOR)
-            .where(Author.AUTHOR.UUID.eq(created.uuid))
-            .fetchOneInto(AuthorEntity::class.java)
+        assertThat(
+            dslContext
+                .selectFrom(Author.AUTHOR)
+                .where(Author.AUTHOR.UUID.eq(created.uuid))
+                .fetchOneInto(AuthorEntity::class.java)?.toModel()
         ).isEqualTo(created)
     }
 

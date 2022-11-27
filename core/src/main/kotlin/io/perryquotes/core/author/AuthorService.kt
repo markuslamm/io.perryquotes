@@ -16,30 +16,30 @@ class AuthorService(private val repository: AuthorRepository) {
     companion object : KLogging()
 
     @Transactional(readOnly = true)
-    fun getByUuid(uuid: UUID): AuthorEntity? {
+    fun getByUuid(uuid: UUID): AuthorModel? {
         logger.debug { "AuthorService.getByUuid = $uuid" }
-        return repository.findByUuid(uuid)
+        return repository.findByUuid(uuid)?.toModel()
     }
 
     @Transactional(readOnly = true)
-    fun getAll(): List<AuthorEntity> {
+    fun getAll(): List<AuthorModel> {
         logger.debug { "AuthorService.getAll" }
-        return repository.findAll()
+        return repository.findAll().map { it.toModel() }
     }
 
     @Transactional
-    fun create(@Valid request: AuthorRequest): AuthorEntity {
+    fun create(@Valid request: AuthorRequest): AuthorModel {
         logger.debug { "AuthorService.create = $request" }
         if (repository.findByName(request.name) != null) {
             throw InvalidDataException("Author[name=${request.name}] already exists")
         }
         val created = repository.create(AuthorEntity(name = request.name))
         logger.info { "Created Author: $created" }
-        return created
+        return created.toModel()
     }
 
     @Transactional
-    fun update(uuid: UUID, @Valid request: AuthorRequest): AuthorEntity {
+    fun update(uuid: UUID, @Valid request: AuthorRequest): AuthorModel {
         logger.debug { "AuthorService.update = $uuid, $request" }
         if (repository.findByName(request.name) != null) {
             throw InvalidDataException("Author[name=${request.name}] already exists")
@@ -48,7 +48,7 @@ class AuthorService(private val repository: AuthorRepository) {
             repository.update(it.copy(name = request.name))
         } ?: throw authorNotFound(uuid)
         logger.info { "Updated Author[uuid=$uuid]: $updated" }
-        return updated
+        return updated.toModel()
     }
 
     @Transactional
