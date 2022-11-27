@@ -8,11 +8,11 @@ import io.perryquotes.core.author.AuthorNotFoundException
 import io.perryquotes.core.author.AuthorRequest
 import io.perryquotes.core.author.AuthorService
 import io.perryquotes.core.exception.InvalidDataException
+import io.perryquotes.testutils.JsonUtil.Companion.asJson
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.*
 import org.jooq.DSLContext
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.HttpHeaders
@@ -107,7 +107,7 @@ internal class AuthorControllerTest {
         mockMvc.perform(
             post("/authors")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJson(request))
+                .content(asJson(objectMapper, request))
         )
             .andDo(print())
             .andExpect(status().isCreated)
@@ -125,7 +125,7 @@ internal class AuthorControllerTest {
         mockMvc.perform(
             post("/authors")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJson(request))
+                .content(asJson(objectMapper, request))
         )
             .andDo(print())
             .andExpect(status().isBadRequest)
@@ -145,7 +145,7 @@ internal class AuthorControllerTest {
         mockMvc.perform(
             post("/authors")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJson(request))
+                .content(asJson(objectMapper, request))
         )
             .andDo(print())
             .andExpect(status().isBadRequest)
@@ -165,7 +165,7 @@ internal class AuthorControllerTest {
         mockMvc.perform(
             put("/authors/${updated.uuid}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJson(request))
+                .content(asJson(objectMapper, request))
         )
             .andDo(print())
             .andExpect(status().isOk)
@@ -182,7 +182,7 @@ internal class AuthorControllerTest {
         mockMvc.perform(
             put("/authors/${randomUUID()}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJson(request))
+                .content(asJson(objectMapper, request))
         )
             .andDo(print())
             .andExpect(status().isBadRequest)
@@ -204,7 +204,7 @@ internal class AuthorControllerTest {
         mockMvc.perform(
             put("/authors/$uuid")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJson(request))
+                .content(asJson(objectMapper, request))
         )
             .andDo(print())
             .andExpect(status().isNotFound)
@@ -237,14 +237,6 @@ internal class AuthorControllerTest {
             .andExpect(jsonPath("$.exception", `is`(exception::class.simpleName)))
             .andExpect(jsonPath("$.message", `is`(exception.message)))
             .andExpect(jsonPath("$.status", `is`("${HttpStatus.NOT_FOUND.value()}:${HttpStatus.NOT_FOUND.name}")))
-    }
-
-    private fun asJson(obj: Any): String {
-        try {
-            return objectMapper.writeValueAsString(obj)
-        } catch (ex: Exception) {
-            fail("Unable to serialize object", ex)
-        }
     }
 }
 

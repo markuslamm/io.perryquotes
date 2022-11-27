@@ -15,6 +15,7 @@ class AuthorController(private val authorService: AuthorService) {
 
     companion object : KLogging()
 
+    //PUBLIC
     @GetMapping("/authors/{uuid}")
     fun getByUuid(@PathVariable uuid: UUID): ResponseEntity<AuthorView> {
         logger.debug { "Handle request GET /authors/$uuid" }
@@ -23,14 +24,16 @@ class AuthorController(private val authorService: AuthorService) {
         } ?: throw AuthorNotFoundException("Author[uuid=$uuid] not found")
     }
 
+    //PUBLIC
     @GetMapping("/authors")
     fun getAll(): ResponseEntity<List<AuthorView>> {
         logger.debug { "Handle request GET /authors" }
         return ResponseEntity.ok(authorService.getAll().map { it.toView() })
     }
 
+    //USER, ADMIN
     @PostMapping("/authors")
-    fun createSource(
+    fun createAuthor(
         @Valid @RequestBody request: AuthorRequest,
         uriBuilder: UriComponentsBuilder,
     ): ResponseEntity<AuthorView> {
@@ -41,8 +44,9 @@ class AuthorController(private val authorService: AuthorService) {
         return ResponseEntity.created(location).body(created.toView())
     }
 
+    //USER, ADMIN
     @PutMapping("/authors/{uuid}")
-    fun updateSource(
+    fun updateAuthor(
         @PathVariable uuid: UUID,
         @Valid @RequestBody request: AuthorRequest,
     ): ResponseEntity<AuthorView>? {
@@ -52,8 +56,9 @@ class AuthorController(private val authorService: AuthorService) {
         return ResponseEntity.ok(updated.toView())
     }
 
+    //ADMIN
     @DeleteMapping("/authors/{uuid}")
-    fun deleteSource(@PathVariable uuid: UUID): ResponseEntity<Unit> {
+    fun deleteAuthor(@PathVariable uuid: UUID): ResponseEntity<Unit> {
         logger.debug { "Handle request DELETE /authors/$uuid" }
         val deleted = authorService.delete(uuid)
         logger.info { "Deleted Author[uuid=$uuid]: $deleted" }
