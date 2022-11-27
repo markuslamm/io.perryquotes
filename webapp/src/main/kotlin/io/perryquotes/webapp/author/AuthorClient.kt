@@ -1,12 +1,21 @@
 package io.perryquotes.webapp.author
 
-import java.util.UUID
+import org.springframework.http.ResponseEntity
+import java.time.LocalDateTime
+import java.util.*
 
 interface AuthorClient {
 
-    fun getAllAuthors(): List<DummyAuthorClient.Author>
-    fun getAuthorByUuid(uuid: UUID): DummyAuthorClient.Author?
+    data class Author(
+        val uuid: UUID,
+        val name: String,
+        val createdDate: LocalDateTime = LocalDateTime.now(),
+        val lastModifiedDate: LocalDateTime = LocalDateTime.now()
+    )
 
-    fun createAuthor(authorForm: AuthorForm): DummyAuthorClient.Author
-    fun updateAuthor(uuid: UUID, authorForm: AuthorForm): DummyAuthorClient.Author
+    fun getAllAuthors(): ResponseEntity<List<Author>>?
+    fun getAuthorByUuid(uuid: UUID): Author?
+
+    fun createAuthor(authorForm: AuthorForm): Author
+    fun updateAuthor(uuid: UUID, authorForm: AuthorForm): Author
 }
