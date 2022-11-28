@@ -3,9 +3,11 @@ package io.perryquotes.webapp.author
 import io.perryquotes.webapp.author.AuthorClient.Author
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
 import java.util.*
 
 @Component
@@ -19,14 +21,17 @@ class AuthorClientImpl(private val webClient: WebClient): AuthorClient  {
             .get()
             .uri("/authors")
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .retrieve()
+            .retrieve().onStatus({status -> status.isError}) { response ->
+                when (response.statusCode()) {
+                    HttpStatus.BAD_REQUEST -> Mono.error(Exception("bad request made"));
+                    HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN -> Mono.error(Exception("auth error"));
+                    HttpStatus.NOT_FOUND -> Mono.error(Exception("Maybe not an error?"));
+                    HttpStatus.INTERNAL_SERVER_ERROR -> Mono.error(Exception("server error"))
+                    else -> { Mono.error( Exception("something went wrong"))}
+                }
+            }
             .toEntity(typeRef<List<Author>>())
             .block() ?: throw RuntimeException("Response of GET /authors is NULL")
-
-        if(!response.statusCode.is2xxSuccessful) {
-            throw RuntimeException("Unexpected HttpStatus: ${response.statusCode.value()}")
-        }
-
         return response.body ?: throw RuntimeException("Body of GET /authors is NULL")
     }
 
