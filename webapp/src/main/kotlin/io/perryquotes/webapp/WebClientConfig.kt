@@ -7,12 +7,12 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-class WebClientConfig {
+class WebClientConfig(val apiProperties: ApiProperties) {
 
     @Bean
     fun webClient(builder: WebClient.Builder): WebClient {
         return builder
-            .baseUrl("http://localhost:9000") //TODO use API ConfigProperties
+            .baseUrl(apiProperties.baseurl)
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .build()
     }

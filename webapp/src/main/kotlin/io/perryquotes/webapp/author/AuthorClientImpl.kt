@@ -1,5 +1,6 @@
 package io.perryquotes.webapp.author
 
+import io.perryquotes.webapp.ApiProperties
 import io.perryquotes.webapp.author.AuthorClient.Author
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
@@ -9,15 +10,15 @@ import org.springframework.web.reactive.function.client.WebClient
 import java.util.*
 
 @Component
-class AuthorClientImpl(private val webClient: WebClient): AuthorClient  {
+class AuthorClientImpl(private val webClient: WebClient,
+                       private val apiProperties: ApiProperties): AuthorClient  {
 
     private inline fun <reified T : Any> typeRef(): ParameterizedTypeReference<T> = object : ParameterizedTypeReference<T>() {}
-
 
     override fun getAllAuthors(): List<Author> {
         val response = webClient
             .get()
-            .uri("/authors")
+            .uri(apiProperties.authors)
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .retrieve()
             .toEntity(typeRef<List<Author>>())
@@ -33,7 +34,7 @@ class AuthorClientImpl(private val webClient: WebClient): AuthorClient  {
     override fun getAuthorByUuid(uuid: UUID): Author? {
         val response = webClient
             .get()
-            .uri("/authors/{uuid}", uuid)
+            .uri("${apiProperties.authors}/{uuid}", uuid)
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .retrieve()
             .toEntity(typeRef<Author>())
