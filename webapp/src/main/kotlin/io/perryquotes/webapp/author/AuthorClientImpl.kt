@@ -1,62 +1,33 @@
 package io.perryquotes.webapp.author
 
 import io.perryquotes.webapp.ApiProperties
-import io.perryquotes.webapp.author.AuthorClient.Author
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
+import io.perryquotes.webapp.base.BaseApiClientImpl
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import reactor.core.publisher.Mono
 import java.util.*
 
 @Component
-class AuthorClientImpl(private val webClient: WebClient,
-                       private val apiProperties: ApiProperties): AuthorClient  {
+class AuthorClientImpl(webClient: WebClient,
+                       private val apiProperties: ApiProperties)
+    : BaseApiClientImpl<AuthorResponse, AuthorForm>(webClient), AuthorClient {
 
-    private inline fun <reified T : Any> typeRef(): ParameterizedTypeReference<T> = object : ParameterizedTypeReference<T>() {}
-
-    override fun getAllAuthors(): List<Author> {
-        val response = webClient
-            .get()
-            .uri(apiProperties.authors)
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .retrieve().onStatus({status -> status.isError}) { response ->
-                when (response.statusCode()) {
-                    HttpStatus.BAD_REQUEST -> Mono.error(Exception("bad request made"));
-                    HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN -> Mono.error(Exception("auth error"));
-                    HttpStatus.NOT_FOUND -> Mono.error(Exception("Maybe not an error?"));
-                    HttpStatus.INTERNAL_SERVER_ERROR -> Mono.error(Exception("server error"))
-                    else -> { Mono.error( Exception("something went wrong"))}
-                }
-            }
-            .toEntity(typeRef<List<Author>>())
-            .block() ?: throw RuntimeException("Response of GET /authors is NULL")
-        return response.body ?: throw RuntimeException("Body of GET /authors is NULL")
+    override fun getApiPath(): String {
+        return apiProperties.authors
     }
 
-    override fun getAuthorByUuid(uuid: UUID): Author? {
-        val response = webClient
-            .get()
-            .uri("${apiProperties.authors}/{uuid}", uuid)
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .retrieve()
-            .toEntity(typeRef<Author>())
-            .block() ?: throw RuntimeException("Response of GET /authors/$uuid is NULL")
-
-        if(!response.statusCode.is2xxSuccessful) {
-            throw RuntimeException("Unexpected HttpStatus: ${response.statusCode.value()}")
-        }
-
-        return response.body ?: throw RuntimeException("Body of GET /authors/$uuid is NULL")
+    override fun getResponseClass(): Class<AuthorResponse> {
+        return AuthorResponse::class.java
     }
 
-    override fun createAuthor(authorForm: AuthorForm): Author {
+    override fun create(request: AuthorForm): AuthorResponse {
         TODO("Not yet implemented")
     }
 
-    override fun updateAuthor(uuid: UUID, authorForm: AuthorForm): Author {
+    override fun update(uuid: UUID, request: AuthorForm): AuthorResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun delete(uuid: UUID): AuthorResponse {
         TODO("Not yet implemented")
     }
 }

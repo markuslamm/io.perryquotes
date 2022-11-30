@@ -18,7 +18,7 @@ class AuthorController(private val authorClient: AuthorClient) {
     @GetMapping("/authors")
     fun listAuthors(model: Model): String {
         logger.debug { "GET /authors, AuthorController.listAuthors" }
-        model["authors"] = authorClient.getAllAuthors()
+        model["authors"] = authorClient.getAll()
         return "authors/author-list"
     }
 
@@ -32,7 +32,7 @@ class AuthorController(private val authorClient: AuthorClient) {
     @PostMapping("/authors")
     fun submitCreateForm(@ModelAttribute authorForm: AuthorForm): String {
         logger.debug { "POST /authors, AuthorController.submitCreateForm, authorForm=$authorForm" }
-        val createdAuthor = authorClient.createAuthor(authorForm)
+        val createdAuthor = authorClient.create(authorForm)
         logger.info { "Created Author: $createdAuthor" }
         return "redirect:/authors"
     }
@@ -40,7 +40,7 @@ class AuthorController(private val authorClient: AuthorClient) {
     @GetMapping("/authors/{uuid}/form")
     fun updateAuthorForm(@PathVariable uuid: UUID, model: Model): String {
         logger.debug { "GET /authors/$uuid/form, AuthorController.updateAuthorForm" }
-        val existing = authorClient.getAuthorByUuid(uuid) ?: throw IllegalArgumentException("Author[uuid=$uuid] found")
+        val existing = authorClient.getByUuid(uuid) ?: throw IllegalArgumentException("Author[uuid=$uuid] found")
         model["author"] = AuthorForm(existing.name, existing.uuid, existing.createdDate, existing.lastModifiedDate)
         return "authors/author-update-form"
     }
@@ -48,13 +48,20 @@ class AuthorController(private val authorClient: AuthorClient) {
     @PostMapping("/authors/{uuid}")
     fun submitUpdateForm(@PathVariable uuid: UUID, @ModelAttribute authorForm: AuthorForm): String {
         logger.debug { "POST /authors/$uuid, AuthorController.submitUpdateForm" }
-        val updatedAuthor = authorClient.updateAuthor(uuid, authorForm)
+        val updatedAuthor = authorClient.update(uuid, authorForm)
         logger.info { "Updated Author: $updatedAuthor" }
         return "redirect:/authors"    }
 
     @PostMapping("/authors/{uuid}/delete")
-    fun deleteAuthor(@PathVariable uuid: UUID): String {
-        logger.debug { "POST /authors/$uuid/delete, AuthorController.deleteAuthor" }
+    fun submitDeleteAuthor(@PathVariable uuid: UUID): String {
+        logger.debug { "POST /authors/$uuid/delete, AuthorController.submitDeleteAuthor" }
+        return ""
+
+    }
+
+    @GetMapping("/authors/{uuid}/delete")
+    fun confirmDeleteAuthor(@PathVariable uuid: UUID): String {
+        logger.debug { "Get /authors/$uuid/delete, AuthorController.confirmDeleteAuthor" }
         return ""
 
     }

@@ -19,9 +19,10 @@ class AuthorController(private val authorService: AuthorService) {
     @GetMapping("/authors/{uuid}")
     fun getByUuid(@PathVariable uuid: UUID): ResponseEntity<AuthorView> {
         logger.debug { "Handle request GET /authors/$uuid" }
-        return authorService.getByUuid(uuid)?.let {
+        val responseEntity = authorService.getByUuid(uuid)?.let {
             ResponseEntity.ok(it.toView())
         } ?: throw AuthorNotFoundException("Author[uuid=$uuid] not found")
+        return responseEntity
     }
 
     //PUBLIC
