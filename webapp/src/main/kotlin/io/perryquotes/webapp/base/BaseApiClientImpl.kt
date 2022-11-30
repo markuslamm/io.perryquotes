@@ -1,7 +1,11 @@
 package io.perryquotes.webapp.base
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
@@ -56,9 +60,21 @@ abstract class BaseApiClientImpl<RESPONSE, REQUEST>(private val webClient: WebCl
     }
 
     override fun create(request: REQUEST): RESPONSE {
-        TODO("Not yet implemented")
+        val path = getApiPath()
+
+        return webClient
+                .post()
+                .uri(path)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(BodyInserters.fromValue(request))
+                .retrieve()
+                .onStatus({ status -> status.isError }, errorHandler)
+                .toEntity(getResponseClass())
+                .block()?.let { response -> response.body ?: throw bodyIsNull(path) }
+                ?: throw responseIsNull(path)
     }
 
+    //TODO
     private val errorHandler: (t: ClientResponse) -> Mono<out Throwable> = { response ->
         when (response.statusCode()) {
             HttpStatus.BAD_REQUEST -> Mono.error(Exception("bad request made"))
