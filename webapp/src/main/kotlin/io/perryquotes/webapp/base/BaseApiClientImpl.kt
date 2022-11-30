@@ -1,6 +1,5 @@
 package io.perryquotes.webapp.base
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -12,7 +11,7 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 
-abstract class BaseApiClientImpl<RESPONSE, REQUEST>(private val webClient: WebClient)
+abstract class BaseApiClientImpl<RESPONSE, REQUEST : Any>(private val webClient: WebClient)
     : BaseApiClient<RESPONSE, REQUEST> {
 
     private val responseTypeDef = object : ParameterizedTypeReference<RESPONSE>() {}
@@ -56,7 +55,19 @@ abstract class BaseApiClientImpl<RESPONSE, REQUEST>(private val webClient: WebCl
     }
 
     override fun update(uuid: UUID, request: REQUEST): RESPONSE {
-        TODO("Not yet implemented")
+        val path = "${getApiPath()}/{uuid}"
+
+        return webClient
+            .put()
+            .uri(path, uuid)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .body(BodyInserters.fromValue(request))
+            .retrieve()
+            .onStatus({ status -> status.isError }, errorHandler)
+            .toEntity(getResponseClass())
+            .block()?.let { response -> response.body ?: throw bodyIsNull(path) }
+            ?: throw responseIsNull(path)
+
     }
 
     override fun create(request: REQUEST): RESPONSE {
