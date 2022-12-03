@@ -1,7 +1,7 @@
 package io.perryquotes.webapp.base
 
-import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
@@ -11,15 +11,10 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 
-abstract class BaseApiClientImpl<RESPONSE, REQUEST : Any>(private val webClient: WebClient)
+abstract class BaseApiClientImpl<RESPONSE: ApiResponse, REQUEST: ApiRequest >(private val webClient: WebClient)
     : BaseApiClient<RESPONSE, REQUEST> {
 
-    private val responseTypeDef = object : ParameterizedTypeReference<RESPONSE>() {}
-    private val responseTypeListDef = object : ParameterizedTypeReference<List<RESPONSE>>() {}
-
     abstract fun getApiPath(): String
-
-    //workaround, avoid classcastexception linkedhashmap -> authorresponse e.g ?? TODO find out why
     abstract fun getResponseClass(): Class<RESPONSE>
 
     override fun getByUuid(uuid: UUID): RESPONSE? {
@@ -32,8 +27,8 @@ abstract class BaseApiClientImpl<RESPONSE, REQUEST : Any>(private val webClient:
                 .retrieve()
                 .onStatus({ status -> status.isError }, errorHandler)
                 .toEntity(getResponseClass())
-                .block()?.let { response -> response.body ?: throw bodyIsNull(path) }
-                ?: throw responseIsNull(path)
+                .block()?.let { response -> response.body ?: throw bodyIsNull(HttpMethod.GET, path) }
+                ?: throw responseIsNull(HttpMethod.GET, path)
     }
 
     override fun getAll(): List<RESPONSE> {
@@ -45,9 +40,9 @@ abstract class BaseApiClientImpl<RESPONSE, REQUEST : Any>(private val webClient:
                 .uri(path)
                 .retrieve()
                 .onStatus({ status -> status.isError }, errorHandler)
-                .toEntity(responseTypeListDef)
-                .block()?.let { response -> response.body ?: throw bodyIsNull(path) }
-                ?: throw responseIsNull(path)
+                .toEntityList(getResponseClass())
+                .block()?.let { response -> response.body ?: throw bodyIsNull(HttpMethod.GET, path) }
+                ?: throw responseIsNull(HttpMethod.GET, path)
     }
 
     override fun delete(uuid: UUID): RESPONSE {
@@ -65,8 +60,8 @@ abstract class BaseApiClientImpl<RESPONSE, REQUEST : Any>(private val webClient:
             .retrieve()
             .onStatus({ status -> status.isError }, errorHandler)
             .toEntity(getResponseClass())
-            .block()?.let { response -> response.body ?: throw bodyIsNull(path) }
-            ?: throw responseIsNull(path)
+            .block()?.let { response -> response.body ?: throw bodyIsNull(HttpMethod.PUT, path) }
+            ?: throw responseIsNull(HttpMethod.PUT, path)
 
     }
 
@@ -81,12 +76,12 @@ abstract class BaseApiClientImpl<RESPONSE, REQUEST : Any>(private val webClient:
                 .retrieve()
                 .onStatus({ status -> status.isError }, errorHandler)
                 .toEntity(getResponseClass())
-                .block()?.let { response -> response.body ?: throw bodyIsNull(path) }
-                ?: throw responseIsNull(path)
+                .block()?.let { response -> response.body ?: throw bodyIsNull(HttpMethod.POST, path) }
+                ?: throw responseIsNull(HttpMethod.PUT, path)
     }
 
     //TODO
-    private val errorHandler: (t: ClientResponse) -> Mono<out Throwable> = { response ->
+    private val errorHandler: (t: ClientResponse) -> Mono<Throwable> = { response ->
         when (response.statusCode()) {
             HttpStatus.BAD_REQUEST -> Mono.error(Exception("bad request made"))
             HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN -> Mono.error(Exception("auth error"))
@@ -98,11 +93,11 @@ abstract class BaseApiClientImpl<RESPONSE, REQUEST : Any>(private val webClient:
         }
     }
 
-    private fun responseIsNull(path: String): RuntimeException {
-        return RuntimeException("ResponseEntity of GET $path is NULL")
+    private fun responseIsNull(httpMethod: HttpMethod, path: String): RuntimeException {
+        return RuntimeException("ResponseEntity of ${httpMethod.name()} $path is NULL")
     }
 
-    private fun bodyIsNull(path: String): RuntimeException {
-        return RuntimeException("ResponseBody of GET $path is NULL")
+    private fun bodyIsNull(httpMethod: HttpMethod, path: String): RuntimeException {
+        return RuntimeException("ResponseBody of GET ${httpMethod.name()} is NULL")
     }
 }

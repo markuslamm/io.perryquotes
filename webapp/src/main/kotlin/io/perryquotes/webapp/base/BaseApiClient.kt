@@ -1,8 +1,8 @@
 package io.perryquotes.webapp.base
 
-import java.util.UUID
+import java.util.*
 
-interface BaseApiClient<RESPONSE, REQUEST> {
+interface BaseApiClient<RESPONSE: ApiResponse, REQUEST: ApiRequest> {
 
     fun getByUuid(uuid: UUID): RESPONSE?
     fun getAll(): List<RESPONSE>
